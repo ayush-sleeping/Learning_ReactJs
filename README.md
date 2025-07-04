@@ -1,2 +1,6 @@
 # Learning_ReactJs
-Learning Laravel from Basics to Advance ....
+> "This repository contains my learning journey with ReactJS, including various projects and exercises. ..."
+
+---
+
+<br>
