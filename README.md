@@ -130,13 +130,11 @@
 | Advanced React Concepts | useCallback |
 | Advanced React Concepts | useContext |
 | Advanced React Concepts | useReducer |
-
 | Advanced React Concepts | React 19 Hooks: useActionState |
 | Advanced React Concepts | useFormStatus |
 | Advanced React Concepts | useOptimistic |
 | Advanced React Concepts | use() API |
 | Advanced React Concepts | Passing Refs as Props |
-
 | Advanced React Concepts | React as a Wrapper |
 | Advanced React Concepts | Reconciliation & How React Works Under the Hood |
 | Advanced React Concepts | Prop Drilling |
@@ -158,14 +156,17 @@
 | Testing | Mocking & Spying |
 | Testing | Testing Async Code |
 | Testing | Project: Test Login Page & UI |
+
 | Best Practices & Tooling | Webpack Mastery |
 | Best Practices & Tooling | Essential Git Commands |
 | Best Practices & Tooling | Docker Setup for React |
 | Best Practices & Tooling | CI/CD with GitLab |
 | Best Practices & Tooling | Tooling: Bootstrapping |
+
 | Best Practices & Tooling | Webpack |
 | Best Practices & Tooling | Vite |
 | Best Practices & Tooling | Pebble |
+
 | AI & Generative AI in Frontend | What is AI & GenAI? |
 | AI & Generative AI in Frontend | GenAI in Frontend |
 | AI & Generative AI in Frontend | Text-to-Image Generation App |
@@ -176,8 +177,9 @@
 | Machine Coding & System Design | LeetCode-Inspired Coding Challenges |
 | Machine Coding & System Design | Hands-On Interview Prep (JS & React) |
 | Machine Coding & System Design | System Design Interviews |
-| Why NextJS is the Future of React | NextJS vs ReactJS |
 | Why NextJS is the Future of React | Modern React Ecosystem |
+| Why NextJS is the Future of React | NextJS vs ReactJS |
+| Why NextJS is the Future of React | NextJS vs NestJS |
 
 <br>
 
@@ -4185,6 +4187,21 @@ function ComponentWithPrevious() {
 }
 ```
 
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+
 
 ### useImperativeHandle
 
@@ -4222,6 +4239,21 @@ function Parent() {
 }
 ```
 
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+
 ### useMemo
 
 Like having a smart calculator that remembers expensive calculations so it doesn't repeat them!
@@ -4248,6 +4280,21 @@ function ExpensiveComponent({ items, filter }) {
   return <div>Total: ${memoizedValue}</div>;
 }
 ```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
 
 ### useCallback
 
@@ -4284,6 +4331,21 @@ const Child = React.memo(({ onClick }) => {
   return <button onClick={onClick}>Click me</button>;
 });
 ```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
 
 ### useContext
 
@@ -4329,6 +4391,21 @@ function MainContent() {
   return <main className={theme}>Content here</main>;
 }
 ```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
 
 ### useReducer
 
@@ -4412,3 +4489,3039 @@ function TodoApp() {
   );
 }
 ```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+
+### React 19 Hooks: useActionState
+
+Like having a smart form that tracks its own submission state and handles errors automatically!
+
+**Key Points:**
+- Manages form submission state (pending, success, error)
+- Works with Server Actions
+- Handles optimistic updates
+
+```js
+import { useActionState } from 'react';
+
+async function submitForm(prevState, formData) {
+  try {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    const name = formData.get('name');
+    return { success: true, message: `Hello ${name}!` };
+  } catch (error) {
+    return { success: false, error: 'Something went wrong' };
+  }
+}
+
+function ContactForm() {
+  const [state, formAction, isPending] = useActionState(submitForm, null);
+
+  return (
+    <form action={formAction}>
+      <input name="name" placeholder="Your name" required />
+      <button type="submit" disabled={isPending}>
+        {isPending ? 'Submitting...' : 'Submit'}
+      </button>
+
+      {state?.success && <p style={{color: 'green'}}>{state.message}</p>}
+      {state?.error && <p style={{color: 'red'}}>{state.error}</p>}
+    </form>
+  );
+}
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+
+### useFormStatus
+
+Like a dashboard that shows you exactly what's happening with your form submission!
+
+**Key Points:**
+- Tracks form submission status
+- Must be used inside a form component
+- Shows pending state and form data
+
+```js
+import { useFormStatus } from 'react-dom';
+
+function SubmitButton() {
+  const { pending, data, method, action } = useFormStatus();
+
+  return (
+    <button type="submit" disabled={pending}>
+      {pending ? 'Saving...' : 'Save'}
+    </button>
+  );
+}
+
+function MyForm() {
+  async function handleSubmit(formData) {
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    console.log('Form submitted:', Object.fromEntries(formData));
+  }
+
+  return (
+    <form action={handleSubmit}>
+      <input name="title" placeholder="Post title" />
+      <textarea name="content" placeholder="Post content" />
+      <SubmitButton />
+    </form>
+  );
+}
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+
+### useOptimistic
+
+Like showing instant results while secretly waiting for the real confirmation in the background!
+
+**Key Points:**
+- Shows immediate UI updates before server confirmation
+- Great for likes, comments, todos
+- Automatically reverts on error
+
+```js
+import { useOptimistic, useState } from 'react';
+
+function TodoApp() {
+  const [todos, setTodos] = useState([
+    { id: 1, text: 'Learn React', completed: false }
+  ]);
+
+  const [optimisticTodos, addOptimisticTodo] = useOptimistic(
+    todos,
+    (state, newTodo) => [...state, newTodo]
+  );
+
+  async function addTodo(formData) {
+    const text = formData.get('text');
+    const newTodo = { id: Date.now(), text, completed: false };
+
+    addOptimisticTodo(newTodo); // Show immediately
+
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setTodos(prev => [...prev, newTodo]); // Real update
+    } catch (error) {
+      console.error('Failed to add todo');
+    }
+  }
+
+  return (
+    <div>
+      <form action={addTodo}>
+        <input name="text" placeholder="New todo" required />
+        <button type="submit">Add Todo</button>
+      </form>
+
+      <ul>
+        {optimisticTodos.map(todo => (
+          <li key={todo.id} style={{
+            opacity: todos.includes(todo) ? 1 : 0.5
+          }}>
+            {todo.text}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+
+### use() API
+
+Like a magic key that can unlock promises and context values anywhere in your component!
+
+**Key Points:**
+- Can be used inside conditions and loops (unlike hooks)
+- Works with Promises and Context
+- Suspends component until promise resolves
+
+```js
+import { use, Suspense } from 'react';
+
+function UserProfile({ userPromise }) {
+  const user = use(userPromise); // Suspends until resolved
+
+  return (
+    <div>
+      <h1>{user.name}</h1>
+      <p>{user.email}</p>
+    </div>
+  );
+}
+
+const ThemeContext = createContext();
+
+function Button({ primary }) {
+  // Can use inside conditions!
+  if (primary) {
+    const theme = use(ThemeContext);
+    return <button className={theme}>Primary Button</button>;
+  }
+
+  return <button>Regular Button</button>;
+}
+
+function App() {
+  const userPromise = fetch('/api/user').then(res => res.json());
+
+  return (
+    <ThemeContext.Provider value="dark">
+      <Suspense fallback={<div>Loading user...</div>}>
+        <UserProfile userPromise={userPromise} />
+        <Button primary />
+      </Suspense>
+    </ThemeContext.Provider>
+  );
+}
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+
+### Passing Refs as Props
+
+Like giving someone the remote control to your TV so they can change channels from their couch!
+
+**Key Points:**
+- Pass refs like normal props (no forwardRef needed)
+- Multiple refs can point to same element
+- Cleaner than forwardRef pattern
+
+```js
+// Old way with forwardRef
+const OldButton = forwardRef((props, ref) => {
+  return <button ref={ref} {...props} />;
+});
+
+// New way - direct ref prop
+function NewButton({ ref, ...props }) {
+  return <button ref={ref} {...props} />;
+}
+
+function App() {
+  const buttonRef = useRef();
+
+  const focusButton = () => {
+    buttonRef.current?.focus();
+  };
+
+  return (
+    <div>
+      <NewButton ref={buttonRef}>Click me</NewButton>
+      <button onClick={focusButton}>Focus the button</button>
+
+      {/* Conditional refs */}
+      <NewButton ref={Math.random() > 0.5 ? buttonRef : null}>
+        Maybe focused
+      </NewButton>
+    </div>
+  );
+}
+```
+
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### React as a Wrapper
+
+Like a gift wrapper that takes your regular HTML and makes it interactive and dynamic!
+
+**Key Points:**
+- React wraps DOM elements with extra powers
+- JSX gets converted to React.createElement calls
+- React manages the actual DOM manipulation
+
+```js
+// What you write (JSX)
+function App() {
+  return <div className="app">Hello World</div>;
+}
+
+// What React actually does
+function App() {
+  return React.createElement('div', { className: 'app' }, 'Hello World');
+}
+
+// React wraps your components with extra functionality
+function WrappedComponent() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  );
+}
+```
+
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### Reconciliation & How React Works Under the Hood
+
+Like having a smart assistant who compares your old shopping list with your new one and only buys what changed!
+
+**Key Points:**
+- React compares Virtual DOM trees (diffing algorithm)
+- Only updates parts of real DOM that actually changed
+- Uses keys to efficiently track list items
+
+```js
+function TodoList({ todos }) {
+  return (
+    <ul>
+      {todos.map(todo => (
+        <li key={todo.id}> {/* Key helps React track items */}
+          {todo.text}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+// Example: Adding item to middle of list
+// Old: [A, B, C]
+// New: [A, X, B, C]
+// With keys: React knows to insert X, keep A, B, C unchanged
+
+function FiberExample() {
+  const [items, setItems] = useState(['A', 'B', 'C']);
+
+  const addItem = () => {
+    setItems(prev => [...prev, `Item ${prev.length + 1}`]);
+    // React schedules this update and can interrupt it for higher priority work
+  };
+
+  return (
+    <div>
+      {items.map((item, index) => (
+        <div key={index}>{item}</div>
+      ))}
+      <button onClick={addItem}>Add Item</button>
+    </div>
+  );
+}
+```
+
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### Prop Drilling
+
+Like passing a message through a long chain of people - each person must pass it along even if they don't need it!
+
+**Key Points:**
+- Passing props through multiple component levels
+- Intermediate components don't use the props
+- Can make code messy and hard to maintain
+
+```js
+// Prop Drilling Problem
+function App() {
+  const user = { name: 'John', role: 'admin' };
+  return <Layout user={user} />;
+}
+
+function Layout({ user }) {
+  // Layout doesn't use user, just passes it down
+  return (
+    <div>
+      <Header user={user} />
+      <Main user={user} />
+    </div>
+  );
+}
+
+function Header({ user }) {
+  // Header doesn't use user, just passes it down
+  return (
+    <header>
+      <Navigation user={user} />
+    </header>
+  );
+}
+
+function Navigation({ user }) {
+  // Finally! Someone who actually uses the user
+  return (
+    <nav>
+      Welcome, {user.name}!
+      {user.role === 'admin' && <AdminPanel />}
+    </nav>
+  );
+}
+
+// Solution: Component Composition
+function BetterApp() {
+  const user = { name: 'John', role: 'admin' };
+
+  return (
+    <Layout>
+      <Header>
+        <Navigation user={user} /> {/* Direct prop passing */}
+      </Header>
+      <Main user={user} />
+    </Layout>
+  );
+}
+```
+
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### Context API
+
+Like a family group chat where everyone can see the same messages without passing them person to person!
+
+**Key Points:**
+- Avoids prop drilling by sharing data globally
+- Provider supplies values, consumers use them
+- Perfect for themes, auth, language settings
+
+```js
+import { createContext, useContext, useState } from 'react';
+
+// 1. Create Context
+const UserContext = createContext();
+
+// 2. Create Provider Component
+function UserProvider({ children }) {
+  const [user, setUser] = useState({ name: 'John', role: 'admin' });
+
+  const login = (userData) => setUser(userData);
+  const logout = () => setUser(null);
+
+  return (
+    <UserContext.Provider value={{ user, login, logout }}>
+      {children}
+    </UserContext.Provider>
+  );
+}
+
+// 3. Custom hook for easy access
+function useUser() {
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error('useUser must be used within UserProvider');
+  }
+  return context;
+}
+
+// 4. Use anywhere in the component tree
+function App() {
+  return (
+    <UserProvider>
+      <Layout />
+    </UserProvider>
+  );
+}
+
+function Header() {
+  const { user, logout } = useUser(); // Direct access!
+
+  return (
+    <header>
+      Welcome, {user?.name}!
+      <button onClick={logout}>Logout</button>
+    </header>
+  );
+}
+```
+
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### Suspense API
+
+Like having a loading screen that automatically shows up while your content is getting ready behind the scenes!
+
+**Key Points:**
+- Shows fallback UI while components are loading
+- Works with lazy loading and data fetching
+- Can have multiple Suspense boundaries
+
+```js
+import { Suspense, lazy } from 'react';
+
+// 1. Lazy Loading Components
+const LazyComponent = lazy(() => import('./HeavyComponent'));
+
+function App() {
+  return (
+    <div>
+      <h1>My App</h1>
+
+      <Suspense fallback={<div>Loading component...</div>}>
+        <LazyComponent />
+      </Suspense>
+    </div>
+  );
+}
+
+// 2. Data Fetching with Suspense
+function UserProfile({ userId }) {
+  const user = use(fetchUser(userId)); // Suspends until data loads
+
+  return (
+    <div>
+      <h2>{user.name}</h2>
+      <p>{user.email}</p>
+    </div>
+  );
+}
+
+function ProfileApp() {
+  return (
+    <Suspense fallback={<div>Loading user...</div>}>
+      <UserProfile userId={1} />
+    </Suspense>
+  );
+}
+
+// 3. Nested Suspense Boundaries
+function NestedApp() {
+  return (
+    <Suspense fallback={<div>Loading app...</div>}>
+      <Header />
+
+      <Suspense fallback={<div>Loading posts...</div>}>
+        <PostList />
+      </Suspense>
+
+      <Suspense fallback={<div>Loading sidebar...</div>}>
+        <Sidebar />
+      </Suspense>
+    </Suspense>
+  );
+}
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### State Management Tools (Redux, Context, etc.)
+
+Like having different sized storage boxes for your app's data - small box for simple stuff, big warehouse for complex apps!
+
+**Key Points:**
+- Context API: Built-in, good for simple global state
+- Redux: Powerful, predictable state management with actions/reducers
+- Zustand: Simple and lightweight alternative
+
+```js
+// 1. Context API (Built-in)
+const AppContext = createContext();
+
+function AppProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [theme, setTheme] = useState('light');
+
+  return (
+    <AppContext.Provider value={{ user, setUser, theme, setTheme }}>
+      {children}
+    </AppContext.Provider>
+  );
+}
+
+// 2. Redux (npm install @reduxjs/toolkit react-redux)
+import { createSlice, configureStore } from '@reduxjs/toolkit';
+
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState: { value: 0 },
+  reducers: {
+    increment: (state) => { state.value += 1; },
+    decrement: (state) => { state.value -= 1; },
+  }
+});
+
+// 3. Zustand (npm install zustand)
+import { create } from 'zustand';
+
+const useStore = create((set) => ({
+  count: 0,
+  increment: () => set((state) => ({ count: state.count + 1 })),
+  decrement: () => set((state) => ({ count: state.count - 1 })),
+}));
+```
+
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### Performance Optimization: Minimize Renders
+
+Like being a smart shopper who only buys what they actually need instead of buying everything in the store!
+
+**Key Points:**
+- Use React.memo to prevent unnecessary re-renders
+- useMemo for expensive calculations
+- useCallback for function references
+
+```js
+// 1. React.memo - prevents re-renders when props haven't changed
+const ExpensiveChild = React.memo(({ name, count }) => {
+  console.log('ExpensiveChild rendered');
+  return <div>{name}: {count}</div>;
+});
+
+// 2. useMemo - cache expensive calculations
+function ExpensiveList({ items, filter }) {
+  const filteredItems = useMemo(() => {
+    return items.filter(item => item.name.includes(filter));
+  }, [items, filter]);
+
+  return (
+    <ul>
+      {filteredItems.map(item => (
+        <li key={item.id}>{item.name}</li>
+      ))}
+    </ul>
+  );
+}
+
+// 3. useCallback - cache function references
+function TodoApp() {
+  const [todos, setTodos] = useState([]);
+
+  const memoizedDelete = useCallback((id) => {
+    setTodos(todos => todos.filter(todo => todo.id !== id));
+  }, []); // Stable reference
+
+  return (
+    <div>
+      {todos.map(todo => (
+        <TodoItem key={todo.id} todo={todo} onDelete={memoizedDelete} />
+      ))}
+    </div>
+  );
+}
+```
+
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### React Hook Form
+
+Like having a smart form assistant that handles all the paperwork while you focus on the important stuff!
+
+**Key Points:**
+- Minimal re-renders with uncontrolled components
+- Built-in validation and error handling
+- Easy integration with UI libraries
+
+```js
+// npm install react-hook-form
+import { useForm } from 'react-hook-form';
+
+function ContactForm() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset
+  } = useForm();
+
+  const onSubmit = async (data) => {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    console.log('Form data:', data);
+    reset();
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <input
+        {...register('name', {
+          required: 'Name is required',
+          minLength: { value: 2, message: 'Min 2 characters' }
+        })}
+        placeholder="Your name"
+      />
+      {errors.name && <span style={{color: 'red'}}>{errors.name.message}</span>}
+
+      <input
+        {...register('email', {
+          required: 'Email is required',
+          pattern: {
+            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+            message: 'Invalid email'
+          }
+        })}
+        placeholder="Your email"
+      />
+      {errors.email && <span style={{color: 'red'}}>{errors.email.message}</span>}
+
+      <button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? 'Sending...' : 'Send'}
+      </button>
+    </form>
+  );
+}
+```
+
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### Formik
+
+Like having a personal form trainer who guides you through every step of form creation and validation!
+
+**Key Points:**
+- More opinionated than React Hook Form
+- Built-in field components and validation
+- Great for complex forms with nested data
+
+```js
+// npm install formik yup
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * Yup from 'yup';
+
+const validationSchema = Yup.object({
+  name: Yup.string().min(2, 'Too Short!').required('Required'),
+  email: Yup.string().email('Invalid email').required('Required'),
+});
+
+function FormikForm() {
+  return (
+    <Formik
+      initialValues={{ name: '', email: '' }}
+      validationSchema={validationSchema}
+      onSubmit={async (values, { setSubmitting, resetForm }) => {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        console.log('Form values:', values);
+        resetForm();
+        setSubmitting(false);
+      }}
+    >
+      {({ isSubmitting }) => (
+        <Form>
+          <Field type="text" name="name" placeholder="Your name" />
+          <ErrorMessage name="name" component="div" style={{color: 'red'}} />
+
+          <Field type="email" name="email" placeholder="Your email" />
+          <ErrorMessage name="email" component="div" style={{color: 'red'}} />
+
+          <button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Submitting...' : 'Submit'}
+          </button>
+        </Form>
+      )}
+    </Formik>
+  );
+}
+```
+
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### SWR
+
+Like having a smart cache that automatically refreshes your data when you switch browser tabs or come back online!
+
+**Key Points:**
+- Stale-while-revalidate strategy
+- Automatic caching, revalidation, and error handling
+- Great for simple data fetching needs
+
+```js
+// npm install swr
+import useSWR from 'swr';
+
+const fetcher = (url) => fetch(url).then(res => res.json());
+
+function UserProfile({ userId }) {
+  const { data: user, error, isLoading, mutate } = useSWR(
+    `/api/users/${userId}`,
+    fetcher,
+    {
+      refreshInterval: 10000, // Refresh every 10 seconds
+      revalidateOnFocus: true, // Refresh when window gets focus
+    }
+  );
+
+  if (error) return <div>Failed to load user</div>;
+  if (isLoading) return <div>Loading...</div>;
+
+  const updateUser = async () => {
+    // Optimistic update
+    mutate({ ...user, name: 'Updated Name' }, false);
+
+    try {
+      await fetch(`/api/users/${userId}`, {
+        method: 'PUT',
+        body: JSON.stringify({ name: 'Updated Name' })
+      });
+      mutate(); // Revalidate
+    } catch (error) {
+      mutate(); // Revert on error
+    }
+  };
+
+  return (
+    <div>
+      <h1>{user.name}</h1>
+      <p>{user.email}</p>
+      <button onClick={updateUser}>Update Name</button>
+    </div>
+  );
+}
+```
+
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### React Query
+
+Like having a super-intelligent data manager that handles caching, syncing, updating, and error handling automatically!
+
+**Key Points:**
+- Most powerful data fetching library
+- Advanced caching strategies and background updates
+- Built-in optimistic updates and infinite queries
+
+```js
+// npm install @tanstack/react-query
+import { QueryClient, QueryClientProvider, useQuery, useMutation } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <UserList />
+    </QueryClientProvider>
+  );
+}
+
+function UserList() {
+  // Query for fetching data
+  const { data: users, isLoading, error } = useQuery({
+    queryKey: ['users'],
+    queryFn: () => fetch('/api/users').then(res => res.json()),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  // Mutation for creating users
+  const createUserMutation = useMutation({
+    mutationFn: (newUser) =>
+      fetch('/api/users', {
+        method: 'POST',
+        body: JSON.stringify(newUser)
+      }).then(res => res.json()),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['users']);
+    }
+  });
+
+  if (isLoading) return <div>Loading users...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
+  return (
+    <div>
+      <button onClick={() => createUserMutation.mutate({ name: 'New User' })}>
+        Create User
+      </button>
+
+      <ul>
+        {users?.map(user => (
+          <li key={user.id}>{user.name}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### State Management for API Data
+
+Like having a smart warehouse manager who knows exactly where all your data is stored and keeps it fresh!
+
+**Key Points:**
+- React Query handles server state separately from client state
+- Automatically manages loading, error, and success states
+- Keeps UI in sync with server data
+
+```js
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+
+function UserDashboard() {
+  const queryClient = useQueryClient();
+
+  // Server state management
+  const { data: users, isLoading, error } = useQuery({
+    queryKey: ['users'],
+    queryFn: () => fetch('/api/users').then(res => res.json())
+  });
+
+  // Update server state
+  const updateUserMutation = useMutation({
+    mutationFn: (userData) =>
+      fetch(`/api/users/${userData.id}`, {
+        method: 'PUT',
+        body: JSON.stringify(userData)
+      }),
+    onSuccess: (updatedUser) => {
+      // Update cache immediately
+      queryClient.setQueryData(['users'], (oldUsers) =>
+        oldUsers.map(user =>
+          user.id === updatedUser.id ? updatedUser : user
+        )
+      );
+    }
+  });
+
+  const handleUpdateUser = (user) => {
+    updateUserMutation.mutate({ ...user, name: 'Updated Name' });
+  };
+
+  if (isLoading) return <div>Loading users...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
+  return (
+    <div>
+      <h1>Users ({users?.length})</h1>
+      {users?.map(user => (
+        <div key={user.id}>
+          <span>{user.name}</span>
+          <button onClick={() => handleUpdateUser(user)}>
+            Update
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### Data Fetching
+
+Like having a personal delivery service that brings you exactly what you need, when you need it!
+
+**Key Points:**
+- Declarative data fetching with useQuery
+- Automatic retries and error handling
+- Support for dependent queries and parallel fetching
+
+```js
+// Basic data fetching
+function UserProfile({ userId }) {
+  const { data: user, isLoading, error, refetch } = useQuery({
+    queryKey: ['user', userId],
+    queryFn: async () => {
+      const response = await fetch(`/api/users/${userId}`);
+      if (!response.ok) throw new Error('Failed to fetch user');
+      return response.json();
+    },
+    enabled: !!userId, // Only run if userId exists
+    retry: 3, // Retry 3 times on failure
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  if (isLoading) return <div>Loading user...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
+  return (
+    <div>
+      <h1>{user.name}</h1>
+      <p>{user.email}</p>
+      <button onClick={() => refetch()}>Refresh</button>
+    </div>
+  );
+}
+
+// Dependent queries
+function UserPosts({ userId }) {
+  // First, get user
+  const { data: user } = useQuery({
+    queryKey: ['user', userId],
+    queryFn: () => fetch(`/api/users/${userId}`).then(res => res.json())
+  });
+
+  // Then get posts (depends on user)
+  const { data: posts, isLoading } = useQuery({
+    queryKey: ['posts', user?.id],
+    queryFn: () => fetch(`/api/users/${user.id}/posts`).then(res => res.json()),
+    enabled: !!user?.id // Only run when user is loaded
+  });
+
+  if (isLoading) return <div>Loading posts...</div>;
+
+  return (
+    <div>
+      <h2>{user?.name}'s Posts</h2>
+      {posts?.map(post => (
+        <div key={post.id}>{post.title}</div>
+      ))}
+    </div>
+  );
+}
+
+// Parallel queries
+function Dashboard() {
+  const userQuery = useQuery({
+    queryKey: ['user'],
+    queryFn: () => fetch('/api/user').then(res => res.json())
+  });
+
+  const postsQuery = useQuery({
+    queryKey: ['posts'],
+    queryFn: () => fetch('/api/posts').then(res => res.json())
+  });
+
+  const notificationsQuery = useQuery({
+    queryKey: ['notifications'],
+    queryFn: () => fetch('/api/notifications').then(res => res.json())
+  });
+
+  if (userQuery.isLoading || postsQuery.isLoading || notificationsQuery.isLoading) {
+    return <div>Loading dashboard...</div>;
+  }
+
+  return (
+    <div>
+      <h1>Welcome, {userQuery.data?.name}</h1>
+      <p>Posts: {postsQuery.data?.length}</p>
+      <p>Notifications: {notificationsQuery.data?.length}</p>
+    </div>
+  );
+}
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### Caching
+
+Like having a super-smart librarian who remembers exactly which books you've read and keeps your favorites within easy reach!
+
+**Key Points:**
+- Intelligent caching with automatic garbage collection
+- Query invalidation and cache updates
+- Background refetching keeps data fresh
+
+```js
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+
+function CachingExample() {
+  const queryClient = useQueryClient();
+
+  const { data: todos } = useQuery({
+    queryKey: ['todos'],
+    queryFn: () => fetch('/api/todos').then(res => res.json()),
+    staleTime: 2 * 60 * 1000, // 2 minutes - data is fresh
+    cacheTime: 10 * 60 * 1000, // 10 minutes - keep in cache
+    refetchOnWindowFocus: true, // Refetch when window regains focus
+    refetchOnReconnect: true, // Refetch when reconnected
+    refetchInterval: 30000, // Refetch every 30 seconds
+  });
+
+  // Manual cache operations
+  const prefetchTodos = () => {
+    queryClient.prefetchQuery({
+      queryKey: ['todos'],
+      queryFn: () => fetch('/api/todos').then(res => res.json()),
+      staleTime: 2 * 60 * 1000,
+    });
+  };
+
+  const invalidateTodos = () => {
+    queryClient.invalidateQueries({ queryKey: ['todos'] });
+  };
+
+  const updateTodoInCache = (todoId, updates) => {
+    queryClient.setQueryData(['todos'], (oldTodos) =>
+      oldTodos.map(todo =>
+        todo.id === todoId ? { ...todo, ...updates } : todo
+      )
+    );
+  };
+
+  const removeTodoFromCache = (todoId) => {
+    queryClient.setQueryData(['todos'], (oldTodos) =>
+      oldTodos.filter(todo => todo.id !== todoId)
+    );
+  };
+
+  return (
+    <div>
+      <h1>Todos ({todos?.length})</h1>
+
+      <div>
+        <button onClick={prefetchTodos}>Prefetch Todos</button>
+        <button onClick={invalidateTodos}>Refresh Todos</button>
+        <button onClick={() => updateTodoInCache(1, { completed: true })}>
+          Mark Todo 1 Complete
+        </button>
+      </div>
+
+      {todos?.map(todo => (
+        <div key={todo.id}>
+          <span style={{
+            textDecoration: todo.completed ? 'line-through' : 'none'
+          }}>
+            {todo.title}
+          </span>
+          <button onClick={() => removeTodoFromCache(todo.id)}>
+            Remove
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// Query with selective cache updates
+function OptimizedTodoList() {
+  const queryClient = useQueryClient();
+
+  const addTodoMutation = useMutation({
+    mutationFn: (newTodo) =>
+      fetch('/api/todos', {
+        method: 'POST',
+        body: JSON.stringify(newTodo)
+      }).then(res => res.json()),
+    onMutate: async (newTodo) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['todos'] });
+
+      // Snapshot previous value
+      const previousTodos = queryClient.getQueryData(['todos']);
+
+      // Optimistically update cache
+      queryClient.setQueryData(['todos'], (old) => [
+        ...old,
+        { id: Date.now(), ...newTodo, completed: false }
+      ]);
+
+      return { previousTodos };
+    },
+    onError: (err, newTodo, context) => {
+      // Rollback on error
+      queryClient.setQueryData(['todos'], context.previousTodos);
+    },
+    onSettled: () => {
+      // Always refetch after error or success
+      queryClient.invalidateQueries({ queryKey: ['todos'] });
+    },
+  });
+
+  return (
+    <div>
+      <button onClick={() => addTodoMutation.mutate({ title: 'New Todo' })}>
+        Add Todo
+      </button>
+    </div>
+  );
+}
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### Synchronization
+
+Like having a perfect orchestra conductor who keeps all musicians playing in harmony, even when someone misses a beat!
+
+**Key Points:**
+- Real-time synchronization across components
+- Optimistic updates with automatic rollback
+- Window focus and network reconnection sync
+
+```js
+function SynchronizationExample() {
+  const queryClient = useQueryClient();
+
+  // Query that syncs across all components
+  const { data: messages, isLoading } = useQuery({
+    queryKey: ['messages'],
+    queryFn: () => fetch('/api/messages').then(res => res.json()),
+    refetchOnWindowFocus: true, // Sync when window regains focus
+    refetchOnReconnect: true, // Sync when network reconnects
+    refetchIntervalInBackground: true, // Keep syncing in background
+    refetchInterval: 5000, // Sync every 5 seconds
+  });
+
+  // Mutation with optimistic updates
+  const sendMessageMutation = useMutation({
+    mutationFn: (message) =>
+      fetch('/api/messages', {
+        method: 'POST',
+        body: JSON.stringify(message)
+      }).then(res => res.json()),
+    onMutate: async (newMessage) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['messages'] });
+
+      // Snapshot the previous value
+      const previousMessages = queryClient.getQueryData(['messages']);
+
+      // Optimistically update to the new value
+      queryClient.setQueryData(['messages'], (old) => [
+        ...old,
+        {
+          id: `temp-${Date.now()}`,
+          ...newMessage,
+          timestamp: new Date().toISOString(),
+          status: 'sending' // Optimistic status
+        }
+      ]);
+
+      return { previousMessages };
+    },
+    onSuccess: (data, variables, context) => {
+      // Replace optimistic update with real data
+      queryClient.setQueryData(['messages'], (old) =>
+        old.map(msg =>
+          msg.id.toString().startsWith('temp-') && msg.text === variables.text
+            ? { ...data, status: 'sent' }
+            : msg
+        )
+      );
+    },
+    onError: (err, newMessage, context) => {
+      // Rollback to previous state
+      queryClient.setQueryData(['messages'], context.previousMessages);
+      console.error('Failed to send message:', err);
+    },
+    onSettled: () => {
+      // Always invalidate to ensure consistency
+      queryClient.invalidateQueries({ queryKey: ['messages'] });
+    },
+  });
+
+  const deleteMessageMutation = useMutation({
+    mutationFn: (messageId) =>
+      fetch(`/api/messages/${messageId}`, { method: 'DELETE' }),
+    onMutate: async (messageId) => {
+      await queryClient.cancelQueries({ queryKey: ['messages'] });
+
+      const previousMessages = queryClient.getQueryData(['messages']);
+
+      // Optimistically remove the message
+      queryClient.setQueryData(['messages'], (old) =>
+        old.filter(msg => msg.id !== messageId)
+      );
+
+      return { previousMessages };
+    },
+    onError: (err, messageId, context) => {
+      queryClient.setQueryData(['messages'], context.previousMessages);
+    },
+  });
+
+  if (isLoading) return <div>Loading messages...</div>;
+
+  return (
+    <div>
+      <h1>Chat Messages</h1>
+
+      <div>
+        {messages?.map(message => (
+          <div key={message.id} style={{
+            opacity: message.status === 'sending' ? 0.5 : 1,
+            border: message.status === 'sending' ? '1px dashed gray' : 'none'
+          }}>
+            <span>{message.text}</span>
+            <small> - {message.timestamp}</small>
+            {message.status === 'sending' && <span> (sending...)</span>}
+            <button onClick={() => deleteMessageMutation.mutate(message.id)}>
+              Delete
+            </button>
+          </div>
+        ))}
+      </div>
+
+      <button onClick={() =>
+        sendMessageMutation.mutate({
+          text: `Hello at ${new Date().toLocaleTimeString()}`
+        })
+      }>
+        Send Message
+      </button>
+    </div>
+  );
+}
+
+// Multi-user synchronization
+function MultiUserSync() {
+  const { data: onlineUsers } = useQuery({
+    queryKey: ['online-users'],
+    queryFn: () => fetch('/api/users/online').then(res => res.json()),
+    refetchInterval: 10000, // Check every 10 seconds
+  });
+
+  const { data: sharedDocument } = useQuery({
+    queryKey: ['shared-doc'],
+    queryFn: () => fetch('/api/document').then(res => res.json()),
+    refetchOnWindowFocus: true, // Sync when switching back to tab
+    refetchInterval: 2000, // Real-time sync every 2 seconds
+  });
+
+  return (
+    <div>
+      <div>Online Users: {onlineUsers?.length}</div>
+      <div>Document: {sharedDocument?.content}</div>
+    </div>
+  );
+}
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### Project-Based Learning with React Query
+
+Like building a real house instead of just learning about bricks - you see how everything works together!
+
+**Key Points:**
+- Complete todo app with React Query
+- Real-world patterns and best practices
+- Error handling and loading states
+
+```js
+// Complete Todo App with React Query
+import { QueryClient, QueryClientProvider, useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      cacheTime: 1000 * 60 * 10, // 10 minutes
+      retry: 2,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
+function TodoApp() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
+        <h1>Todo App with React Query</h1>
+        <AddTodoForm />
+        <TodoList />
+        <TodoStats />
+      </div>
+    </QueryClientProvider>
+  );
+}
+
+function AddTodoForm() {
+  const [text, setText] = useState('');
+  const queryClient = useQueryClient();
+
+  const addTodoMutation = useMutation({
+    mutationFn: (newTodo) =>
+      fetch('/api/todos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newTodo),
+      }).then(res => res.json()),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['todos'] });
+      setText('');
+    },
+    onError: (error) => {
+      alert(`Error: ${error.message}`);
+    }
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (text.trim()) {
+      addTodoMutation.mutate({
+        text: text.trim(),
+        completed: false,
+        createdAt: new Date().toISOString(),
+      });
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} style={{ marginBottom: '20px' }}>
+      <input
+        type="text"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        placeholder="Add a new todo..."
+        disabled={addTodoMutation.isLoading}
+        style={{ padding: '8px', marginRight: '8px', width: '300px' }}
+      />
+      <button
+        type="submit"
+        disabled={addTodoMutation.isLoading || !text.trim()}
+        style={{ padding: '8px 16px' }}
+      >
+        {addTodoMutation.isLoading ? 'Adding...' : 'Add Todo'}
+      </button>
+    </form>
+  );
+}
+
+function TodoList() {
+  const { data: todos, isLoading, error } = useQuery({
+    queryKey: ['todos'],
+    queryFn: () => fetch('/api/todos').then(res => res.json()),
+  });
+
+  if (isLoading) return <div>Loading todos...</div>;
+  if (error) return <div>Error loading todos: {error.message}</div>;
+
+  return (
+    <div>
+      {todos?.length === 0 ? (
+        <p>No todos yet. Add one above!</p>
+      ) : (
+        <div>
+          {todos?.map(todo => (
+            <TodoItem key={todo.id} todo={todo} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function TodoItem({ todo }) {
+  const queryClient = useQueryClient();
+
+  const updateTodoMutation = useMutation({
+    mutationFn: (updatedTodo) =>
+      fetch(`/api/todos/${todo.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedTodo),
+      }).then(res => res.json()),
+    onMutate: async (updatedTodo) => {
+      await queryClient.cancelQueries({ queryKey: ['todos'] });
+      const previousTodos = queryClient.getQueryData(['todos']);
+
+      queryClient.setQueryData(['todos'], (old) =>
+        old.map(t => t.id === todo.id ? { ...t, ...updatedTodo } : t)
+      );
+
+      return { previousTodos };
+    },
+    onError: (err, updatedTodo, context) => {
+      queryClient.setQueryData(['todos'], context.previousTodos);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['todos'] });
+    }
+  });
+
+  const deleteTodoMutation = useMutation({
+    mutationFn: () => fetch(`/api/todos/${todo.id}`, { method: 'DELETE' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['todos'] });
+    }
+  });
+
+  return (
+    <div style={{
+      display: 'flex',
+      alignItems: 'center',
+      padding: '8px',
+      border: '1px solid #ddd',
+      marginBottom: '4px',
+      opacity: updateTodoMutation.isLoading ? 0.7 : 1
+    }}>
+      <input
+        type="checkbox"
+        checked={todo.completed}
+        onChange={(e) =>
+          updateTodoMutation.mutate({ completed: e.target.checked })
+        }
+        style={{ marginRight: '8px' }}
+      />
+      <span style={{
+        flex: 1,
+        textDecoration: todo.completed ? 'line-through' : 'none'
+      }}>
+        {todo.text}
+      </span>
+      <button
+        onClick={() => deleteTodoMutation.mutate()}
+        disabled={deleteTodoMutation.isLoading}
+        style={{ marginLeft: '8px', padding: '4px 8px' }}
+      >
+        {deleteTodoMutation.isLoading ? 'Deleting...' : 'Delete'}
+      </button>
+    </div>
+  );
+}
+
+function TodoStats() {
+  const { data: todos } = useQuery({
+    queryKey: ['todos'],
+    queryFn: () => fetch('/api/todos').then(res => res.json()),
+  });
+
+  const total = todos?.length || 0;
+  const completed = todos?.filter(todo => todo.completed).length || 0;
+  const remaining = total - completed;
+
+  return (
+    <div style={{
+      marginTop: '20px',
+      padding: '16px',
+      backgroundColor: '#f5f5f5',
+      borderRadius: '4px'
+    }}>
+      <h3>Statistics</h3>
+      <p>Total: {total}</p>
+      <p>Completed: {completed}</p>
+      <p>Remaining: {remaining}</p>
+      <p>Progress: {total > 0 ? Math.round((completed / total) * 100) : 0}%</p>
+    </div>
+  );
+}
+
+export default TodoApp;
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+
+### Introduction to Testing in React
+
+Like having a quality control inspector who checks every part of your car before it leaves the factory!
+
+**Key Points:**
+
+- Testing ensures your components work correctly and prevent bugs
+- Different types: Unit tests, Integration tests, End-to-end tests
+- React Testing Library focuses on testing user interactions
+
+```js
+// Simple component to test
+function Welcome({ name, isLoggedIn }) {
+  if (!isLoggedIn) {
+    return <div>Please log in</div>;
+  }
+
+  return (
+    <div>
+      <h1>Welcome, {name}!</h1>
+      <button onClick={() => alert('Logged out!')}>Logout</button>
+    </div>
+  );
+}
+
+// Basic test example
+import { render, screen } from '@testing-library/react';
+import Welcome from './Welcome';
+
+test('shows login message when not logged in', () => {
+  render(<Welcome name="John" isLoggedIn={false} />);
+
+  expect(screen.getByText('Please log in')).toBeInTheDocument();
+});
+
+test('shows welcome message when logged in', () => {
+  render(<Welcome name="John" isLoggedIn={true} />);
+
+  expect(screen.getByText('Welcome, John!')).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Logout' })).toBeInTheDocument();
+});
+
+// Testing user interactions
+import { fireEvent } from '@testing-library/react';
+
+test('shows alert when logout clicked', () => {
+  // Mock window.alert
+  window.alert = jest.fn();
+
+  render(<Welcome name="John" isLoggedIn={true} />);
+
+  const logoutButton = screen.getByRole('button', { name: 'Logout' });
+  fireEvent.click(logoutButton);
+
+  expect(window.alert).toHaveBeenCalledWith('Logged out!');
+});
+
+// Testing with different props
+describe('Welcome component', () => {
+  test('renders correctly with different names', () => {
+    const names = ['Alice', 'Bob', 'Charlie'];
+
+    names.forEach(name => {
+      render(<Welcome name={name} isLoggedIn={true} />);
+      expect(screen.getByText(`Welcome, ${name}!`)).toBeInTheDocument();
+    });
+  });
+});
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### Setting Up Jest & Component Testing
+
+Like setting up a perfect workshop with all the right tools before you start building!
+
+**Key Points:**
+
+- Jest is the testing framework (comes with Create React App)
+- React Testing Library provides utilities for testing React components
+- Setup includes test files, matchers, and mock configurations
+
+```js
+// package.json - test dependencies
+{
+  "devDependencies": {
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/user-event": "^14.4.3",
+    "jest": "^27.5.1"
+  },
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  }
+}
+
+// setupTests.js - global test setup
+import '@testing-library/jest-dom';
+
+// Optional: Custom matchers
+expect.extend({
+  toBeVisible(received) {
+    const pass = received.style.display !== 'none';
+    return {
+      message: () => `expected element to ${pass ? 'not ' : ''}be visible`,
+      pass,
+    };
+  }
+});
+
+// jest.config.js - Jest configuration
+module.exports = {
+  testEnvironment: 'jsdom',
+  setupFilesAfterEnv: ['<rootDir>/src/setupTests.js'],
+  moduleNameMapping: {
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+    '\\.(jpg|jpeg|png|gif|svg)$': '<rootDir>/src/__mocks__/fileMock.js'
+  },
+  collectCoverageFrom: [
+    'src/**/*.{js,jsx}',
+    '!src/index.js',
+    '!src/reportWebVitals.js'
+  ],
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80
+    }
+  }
+};
+
+// Component testing patterns
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <p data-testid="count">Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+      <button onClick={() => setCount(count - 1)}>Decrement</button>
+      <button onClick={() => setCount(0)}>Reset</button>
+    </div>
+  );
+}
+
+// Counter.test.js
+import { render, screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import Counter from './Counter';
+
+describe('Counter Component', () => {
+  beforeEach(() => {
+    render(<Counter />);
+  });
+
+  test('renders initial count', () => {
+    expect(screen.getByTestId('count')).toHaveTextContent('Count: 0');
+  });
+
+  test('increments count when increment button clicked', async () => {
+    const user = userEvent.setup();
+    const incrementButton = screen.getByRole('button', { name: 'Increment' });
+
+    await user.click(incrementButton);
+
+    expect(screen.getByTestId('count')).toHaveTextContent('Count: 1');
+  });
+
+  test('decrements count when decrement button clicked', async () => {
+    const user = userEvent.setup();
+    const decrementButton = screen.getByRole('button', { name: 'Decrement' });
+
+    await user.click(decrementButton);
+
+    expect(screen.getByTestId('count')).toHaveTextContent('Count: -1');
+  });
+
+  test('resets count when reset button clicked', async () => {
+    const user = userEvent.setup();
+
+    // First increment
+    await user.click(screen.getByRole('button', { name: 'Increment' }));
+    expect(screen.getByTestId('count')).toHaveTextContent('Count: 1');
+
+    // Then reset
+    await user.click(screen.getByRole('button', { name: 'Reset' }));
+    expect(screen.getByTestId('count')).toHaveTextContent('Count: 0');
+  });
+});
+
+// Testing with custom render function
+function customRender(ui, options = {}) {
+  const AllTheProviders = ({ children }) => {
+    return (
+      <ThemeProvider theme="light">
+        <Router>
+          {children}
+        </Router>
+      </ThemeProvider>
+    );
+  };
+
+  return render(ui, { wrapper: AllTheProviders, ...options });
+}
+
+// Custom hook testing
+import { renderHook, act } from '@testing-library/react';
+
+function useCounter(initialValue = 0) {
+  const [count, setCount] = useState(initialValue);
+
+  const increment = () => setCount(c => c + 1);
+  const decrement = () => setCount(c => c - 1);
+  const reset = () => setCount(initialValue);
+
+  return { count, increment, decrement, reset };
+}
+
+test('useCounter hook works correctly', () => {
+  const { result } = renderHook(() => useCounter(5));
+
+  expect(result.current.count).toBe(5);
+
+  act(() => {
+    result.current.increment();
+  });
+
+  expect(result.current.count).toBe(6);
+
+  act(() => {
+    result.current.reset();
+  });
+
+  expect(result.current.count).toBe(5);
+});
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### Mocking & Spying
+
+Like having a stunt double who can pretend to be anyone and tell you exactly what happened during the scene!
+
+**Key Points:**
+
+- Mocks replace real functions/modules with fake implementations
+- Spies watch function calls and track what happened
+- Essential for testing external dependencies and side effects
+
+```js
+// Basic mocking examples
+describe('Mocking Functions', () => {
+  test('mock a simple function', () => {
+    const mockFn = jest.fn();
+    mockFn('hello', 'world');
+
+    expect(mockFn).toHaveBeenCalledWith('hello', 'world');
+    expect(mockFn).toHaveBeenCalledTimes(1);
+  });
+
+  test('mock with return value', () => {
+    const mockFn = jest.fn();
+    mockFn.mockReturnValue(42);
+
+    expect(mockFn()).toBe(42);
+  });
+
+  test('mock with different return values', () => {
+    const mockFn = jest.fn();
+    mockFn
+      .mockReturnValueOnce('first')
+      .mockReturnValueOnce('second')
+      .mockReturnValue('default');
+
+    expect(mockFn()).toBe('first');
+    expect(mockFn()).toBe('second');
+    expect(mockFn()).toBe('default');
+  });
+});
+
+// Mocking modules
+// __mocks__/axios.js
+export default {
+  get: jest.fn(() => Promise.resolve({ data: {} })),
+  post: jest.fn(() => Promise.resolve({ data: {} })),
+};
+
+// Component that uses axios
+function UserProfile({ userId }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    axios.get(`/api/users/${userId}`)
+      .then(response => {
+        setUser(response.data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  }, [userId]);
+
+  if (loading) return <div>Loading...</div>;
+  if (!user) return <div>User not found</div>;
+
+  return (
+    <div>
+      <h1>{user.name}</h1>
+      <p>{user.email}</p>
+    </div>
+  );
+}
+
+// Testing with mocked axios
+import axios from 'axios';
+import { render, screen, waitFor } from '@testing-library/react';
+import UserProfile from './UserProfile';
+
+jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
+
+describe('UserProfile with mocked axios', () => {
+  beforeEach(() => {
+    mockedAxios.get.mockClear();
+  });
+
+  test('displays user data when API call succeeds', async () => {
+    const userData = { id: 1, name: 'John Doe', email: 'john@example.com' };
+    mockedAxios.get.mockResolvedValue({ data: userData });
+
+    render(<UserProfile userId={1} />);
+
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByText('John Doe')).toBeInTheDocument();
+      expect(screen.getByText('john@example.com')).toBeInTheDocument();
+    });
+
+    expect(mockedAxios.get).toHaveBeenCalledWith('/api/users/1');
+  });
+
+  test('displays error message when API call fails', async () => {
+    mockedAxios.get.mockRejectedValue(new Error('API Error'));
+
+    render(<UserProfile userId={1} />);
+
+    await waitFor(() => {
+      expect(screen.getByText('User not found')).toBeInTheDocument();
+    });
+  });
+});
+
+// Spying on real functions
+describe('Spying Examples', () => {
+  test('spy on console.log', () => {
+    const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+
+    function greet(name) {
+      console.log(`Hello, ${name}!`);
+      return `Greeting sent to ${name}`;
+    }
+
+    const result = greet('Alice');
+
+    expect(consoleSpy).toHaveBeenCalledWith('Hello, Alice!');
+    expect(result).toBe('Greeting sent to Alice');
+
+    consoleSpy.mockRestore();
+  });
+
+  test('spy on object methods', () => {
+    const user = {
+      name: 'John',
+      greet() {
+        return `Hello, I'm ${this.name}`;
+      }
+    };
+
+    const greetSpy = jest.spyOn(user, 'greet');
+
+    const greeting = user.greet();
+
+    expect(greetSpy).toHaveBeenCalled();
+    expect(greeting).toBe("Hello, I'm John");
+
+    greetSpy.mockRestore();
+  });
+
+  test('spy with custom implementation', () => {
+    const mathUtils = {
+      add: (a, b) => a + b,
+      multiply: (a, b) => a * b
+    };
+
+    const addSpy = jest.spyOn(mathUtils, 'add')
+      .mockImplementation((a, b) => {
+        console.log(`Adding ${a} + ${b}`);
+        return a + b;
+      });
+
+    const result = mathUtils.add(2, 3);
+
+    expect(addSpy).toHaveBeenCalledWith(2, 3);
+    expect(result).toBe(5);
+  });
+});
+
+// Mocking React Router
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => jest.fn(),
+  useParams: () => ({ id: '123' }),
+  useLocation: () => ({ pathname: '/users/123' })
+}));
+
+// Mocking local storage
+const localStorageMock = {
+  getItem: jest.fn(),
+  setItem: jest.fn(),
+  removeItem: jest.fn(),
+  clear: jest.fn(),
+};
+
+Object.defineProperty(window, 'localStorage', {
+  value: localStorageMock
+});
+
+test('component uses localStorage', () => {
+  localStorageMock.getItem.mockReturnValue('saved-data');
+
+  render(<MyComponent />);
+
+  expect(localStorageMock.getItem).toHaveBeenCalledWith('user-preferences');
+});
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### Testing Async Code
+
+Like being a patient detective who waits for all the clues to arrive before solving the case!
+
+**Key Points:**
+
+- Use waitFor for elements that appear after async operations
+- Mock API calls and promises for predictable testing
+- Handle loading states, success, and error scenarios
+
+```js
+// Component with async operations
+function UserList() {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/users');
+      if (!response.ok) throw new Error('Failed to fetch');
+      const data = await response.json();
+      setUsers(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteUser = async (userId) => {
+    try {
+      await fetch(`/api/users/${userId}`, { method: 'DELETE' });
+      setUsers(users.filter(user => user.id !== userId));
+    } catch (err) {
+      setError('Failed to delete user');
+    }
+  };
+
+  if (loading) return <div>Loading users...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+  return (
+    <div>
+      <h1>Users ({users.length})</h1>
+      {users.map(user => (
+        <div key={user.id}>
+          <span>{user.name}</span>
+          <button onClick={() => deleteUser(user.id)}>
+            Delete
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// Testing async component
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+
+// Mock fetch globally
+global.fetch = jest.fn();
+
+describe('UserList Async Tests', () => {
+  beforeEach(() => {
+    fetch.mockClear();
+  });
+
+  test('displays loading state initially', () => {
+    fetch.mockResolvedValue({
+      ok: true,
+      json: async () => []
+    });
+
+    render(<UserList />);
+
+    expect(screen.getByText('Loading users...')).toBeInTheDocument();
+  });
+
+  test('displays users after successful fetch', async () => {
+    const mockUsers = [
+      { id: 1, name: 'Alice' },
+      { id: 2, name: 'Bob' }
+    ];
+
+    fetch.mockResolvedValue({
+      ok: true,
+      json: async () => mockUsers
+    });
+
+    render(<UserList />);
+
+    // Wait for loading to finish
+    await waitFor(() => {
+      expect(screen.queryByText('Loading users...')).not.toBeInTheDocument();
+    });
+
+    // Check if users are displayed
+    expect(screen.getByText('Users (2)')).toBeInTheDocument();
+    expect(screen.getByText('Alice')).toBeInTheDocument();
+    expect(screen.getByText('Bob')).toBeInTheDocument();
+  });
+
+  test('displays error message when fetch fails', async () => {
+    fetch.mockRejectedValue(new Error('Network error'));
+
+    render(<UserList />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Error: Network error')).toBeInTheDocument();
+    });
+  });
+
+  test('deletes user when delete button clicked', async () => {
+    const mockUsers = [
+      { id: 1, name: 'Alice' },
+      { id: 2, name: 'Bob' }
+    ];
+
+    // Mock initial fetch
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockUsers
+    });
+
+    render(<UserList />);
+
+    // Wait for initial load
+    await waitFor(() => {
+      expect(screen.getByText('Alice')).toBeInTheDocument();
+    });
+
+    // Mock delete request
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({})
+    });
+
+    // Click delete button for Alice
+    const deleteButton = screen.getAllByText('Delete')[0];
+    fireEvent.click(deleteButton);
+
+    // Wait for Alice to be removed
+    await waitFor(() => {
+      expect(screen.queryByText('Alice')).not.toBeInTheDocument();
+    });
+
+    expect(screen.getByText('Bob')).toBeInTheDocument();
+    expect(fetch).toHaveBeenCalledWith('/api/users/1', { method: 'DELETE' });
+  });
+});
+
+// Testing with React Query
+function UserListWithQuery() {
+  const { data: users, isLoading, error, refetch } = useQuery({
+    queryKey: ['users'],
+    queryFn: () => fetch('/api/users').then(res => res.json())
+  });
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
+  return (
+    <div>
+      <button onClick={() => refetch()}>Refresh</button>
+      {users?.map(user => (
+        <div key={user.id}>{user.name}</div>
+      ))}
+    </div>
+  );
+}
+
+// Testing React Query component
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+test('React Query component loads data', async () => {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+    },
+  });
+
+  fetch.mockResolvedValue({
+    ok: true,
+    json: async () => [{ id: 1, name: 'Alice' }]
+  });
+
+  render(
+    <QueryClientProvider client={queryClient}>
+      <UserListWithQuery />
+    </QueryClientProvider>
+  );
+
+  expect(screen.getByText('Loading...')).toBeInTheDocument();
+
+  await waitFor(() => {
+    expect(screen.getByText('Alice')).toBeInTheDocument();
+  });
+});
+
+// Testing custom async hooks
+function useAsyncUser(userId) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const fetchUser = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/users/${userId}`);
+        const userData = await response.json();
+
+        if (!cancelled) {
+          setUser(userData);
+          setLoading(false);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError(err);
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchUser();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [userId]);
+
+  return { user, loading, error };
+}
+
+// Testing the custom hook
+import { renderHook, waitFor } from '@testing-library/react';
+
+test('useAsyncUser hook fetches user data', async () => {
+  const mockUser = { id: 1, name: 'Alice' };
+
+  fetch.mockResolvedValue({
+    ok: true,
+    json: async () => mockUser
+  });
+
+  const { result } = renderHook(() => useAsyncUser(1));
+
+  expect(result.current.loading).toBe(true);
+  expect(result.current.user).toBe(null);
+
+  await waitFor(() => {
+    expect(result.current.loading).toBe(false);
+  });
+
+  expect(result.current.user).toEqual(mockUser);
+  expect(result.current.error).toBe(null);
+});
+
+// Testing with timers
+function DelayedMessage() {
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setMessage('Hello after 2 seconds!');
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  return <div>{message || 'Waiting...'}</div>;
+}
+
+test('displays message after delay', async () => {
+  jest.useFakeTimers();
+
+  render(<DelayedMessage />);
+
+  expect(screen.getByText('Waiting...')).toBeInTheDocument();
+
+  // Fast-forward time
+  jest.advanceTimersByTime(2000);
+
+  await waitFor(() => {
+    expect(screen.getByText('Hello after 2 seconds!')).toBeInTheDocument();
+  });
+
+  jest.useRealTimers();
+});
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### Project: Test Login Page & UI
+
+Like building a complete security system test for your house - checking every door, window, and alarm!
+
+**Key Points:**
+
+- Complete testing of login form validation
+- Testing user interactions and form submission
+- Integration testing with authentication flow
+
+```js
+// LoginPage.js - Component to test
+function LoginPage() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false);
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!email) {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = 'Email is invalid';
+    }
+
+    if (!password) {
+      newErrors.password = 'Password is required';
+    } else if (password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) return;
+
+    setLoading(true);
+
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('token', data.token);
+        setLoginSuccess(true);
+      } else {
+        const errorData = await response.json();
+        setErrors({ submit: errorData.message || 'Login failed' });
+      }
+    } catch (error) {
+      setErrors({ submit: 'Network error. Please try again.' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loginSuccess) {
+    return (
+      <div className="success-message">
+        <h2>Login Successful!</h2>
+        <p>Welcome back!</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="login-page">
+      <form onSubmit={handleSubmit} className="login-form">
+        <h1>Login</h1>
+
+        <div className="form-group">
+          <label htmlFor="email">Email:</label>
+          <input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className={errors.email ? 'error' : ''}
+            aria-describedby={errors.email ? 'email-error' : undefined}
+          />
+          {errors.email && (
+            <span id="email-error" className="error-message" role="alert">
+              {errors.email}
+            </span>
+          )}
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="password">Password:</label>
+          <input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className={errors.password ? 'error' : ''}
+            aria-describedby={errors.password ? 'password-error' : undefined}
+          />
+          {errors.password && (
+            <span id="password-error" className="error-message" role="alert">
+              {errors.password}
+            </span>
+          )}
+        </div>
+
+        {errors.submit && (
+          <div className="error-message" role="alert">
+            {errors.submit}
+          </div>
+        )}
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="submit-button"
+        >
+          {loading ? 'Logging in...' : 'Login'}
+        </button>
+      </form>
+    </div>
+  );
+}
+
+// LoginPage.test.js - Comprehensive test suite
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import LoginPage from './LoginPage';
+
+// Mock fetch
+global.fetch = jest.fn();
+
+// Mock localStorage
+const localStorageMock = {
+  getItem: jest.fn(),
+  setItem: jest.fn(),
+  removeItem: jest.fn(),
+  clear: jest.fn(),
+};
+Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+
+describe('LoginPage Component', () => {
+  beforeEach(() => {
+    fetch.mockClear();
+    localStorageMock.setItem.mockClear();
+    localStorageMock.getItem.mockClear();
+  });
+
+  // Rendering Tests
+  describe('Rendering', () => {
+    test('renders login form with all elements', () => {
+      render(<LoginPage />);
+
+      expect(screen.getByRole('heading', { name: 'Login' })).toBeInTheDocument();
+      expect(screen.getByLabelText('Email:')).toBeInTheDocument();
+      expect(screen.getByLabelText('Password:')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument();
+    });
+
+    test('form elements have correct attributes', () => {
+      render(<LoginPage />);
+
+      const emailInput = screen.getByLabelText('Email:');
+      const passwordInput = screen.getByLabelText('Password:');
+
+      expect(emailInput).toHaveAttribute('type', 'email');
+      expect(passwordInput).toHaveAttribute('type', 'password');
+      expect(emailInput).toHaveAttribute('id', 'email');
+      expect(passwordInput).toHaveAttribute('id', 'password');
+    });
+  });
+
+  // Form Validation Tests
+  describe('Form Validation', () => {
+    test('shows error when email is empty', async () => {
+      const user = userEvent.setup();
+      render(<LoginPage />);
+
+      const submitButton = screen.getByRole('button', { name: 'Login' });
+      await user.click(submitButton);
+
+      expect(screen.getByText('Email is required')).toBeInTheDocument();
+      expect(screen.getByRole('alert')).toBeInTheDocument();
+    });
+
+    test('shows error when email is invalid', async () => {
+      const user = userEvent.setup();
+      render(<LoginPage />);
+
+      await user.type(screen.getByLabelText('Email:'), 'invalid-email');
+      await user.click(screen.getByRole('button', { name: 'Login' }));
+
+      expect(screen.getByText('Email is invalid')).toBeInTheDocument();
+    });
+
+    test('shows error when password is empty', async () => {
+      const user = userEvent.setup();
+      render(<LoginPage />);
+
+      await user.type(screen.getByLabelText('Email:'), 'test@example.com');
+      await user.click(screen.getByRole('button', { name: 'Login' }));
+
+      expect(screen.getByText('Password is required')).toBeInTheDocument();
+    });
+
+    test('shows error when password is too short', async () => {
+      const user = userEvent.setup();
+      render(<LoginPage />);
+
+      await user.type(screen.getByLabelText('Email:'), 'test@example.com');
+      await user.type(screen.getByLabelText('Password:'), '123');
+      await user.click(screen.getByRole('button', { name: 'Login' }));
+
+      expect(screen.getByText('Password must be at least 6 characters')).toBeInTheDocument();
+    });
+
+    test('clears errors when valid input is entered', async () => {
+      const user = userEvent.setup();
+      render(<LoginPage />);
+
+      // First, trigger error
+      await user.click(screen.getByRole('button', { name: 'Login' }));
+      expect(screen.getByText('Email is required')).toBeInTheDocument();
+
+      // Then enter valid email
+      await user.type(screen.getByLabelText('Email:'), 'test@example.com');
+      await user.type(screen.getByLabelText('Password:'), 'password123');
+
+      // Errors should be cleared when form is resubmitted
+      fetch.mockResolvedValue({
+        ok: true,
+        json: async () => ({ token: 'fake-token' })
+      });
+
+      await user.click(screen.getByRole('button', { name: 'Login' }));
+
+      expect(screen.queryByText('Email is required')).not.toBeInTheDocument();
+    });
+  });
+
+  // User Interaction Tests
+  describe('User Interactions', () => {
+    test('updates input values when user types', async () => {
+      const user = userEvent.setup();
+      render(<LoginPage />);
+
+      const emailInput = screen.getByLabelText('Email:');
+      const passwordInput = screen.getByLabelText('Password:');
+
+      await user.type(emailInput, 'user@example.com');
+      await user.type(passwordInput, 'mypassword');
+
+      expect(emailInput).toHaveValue('user@example.com');
+      expect(passwordInput).toHaveValue('mypassword');
+    });
+
+    test('form can be submitted by pressing Enter', async () => {
+      const user = userEvent.setup();
+      render(<LoginPage />);
+
+      fetch.mockResolvedValue({
+        ok: true,
+        json: async () => ({ token: 'fake-token' })
+      });
+
+      await user.type(screen.getByLabelText('Email:'), 'test@example.com');
+      await user.type(screen.getByLabelText('Password:'), 'password123');
+      await user.keyboard('{Enter}');
+
+      await waitFor(() => {
+        expect(fetch).toHaveBeenCalledWith('/api/login', expect.any(Object));
+      });
+    });
+  });
+
+  // API Integration Tests
+  describe('API Integration', () => {
+    test('successful login saves token and shows success message', async () => {
+      const user = userEvent.setup();
+      const mockToken = 'mock-jwt-token';
+
+      fetch.mockResolvedValue({
+        ok: true,
+        json: async () => ({ token: mockToken })
+      });
+
+      render(<LoginPage />);
+
+      await user.type(screen.getByLabelText('Email:'), 'test@example.com');
+      await user.type(screen.getByLabelText('Password:'), 'password123');
+      await user.click(screen.getByRole('button', { name: 'Login' }));
+
+      expect(screen.getByText('Logging in...')).toBeInTheDocument();
+
+      await waitFor(() => {
+        expect(screen.getByText('Login Successful!')).toBeInTheDocument();
+      });
+
+      expect(localStorageMock.setItem).toHaveBeenCalledWith('token', mockToken);
+      expect(fetch).toHaveBeenCalledWith('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: 'test@example.com',
+          password: 'password123'
+        })
+      });
+    });
+
+    test('failed login shows error message', async () => {
+      const user = userEvent.setup();
+
+      fetch.mockResolvedValue({
+        ok: false,
+        json: async () => ({ message: 'Invalid credentials' })
+      });
+
+      render(<LoginPage />);
+
+      await user.type(screen.getByLabelText('Email:'), 'test@example.com');
+      await user.type(screen.getByLabelText('Password:'), 'wrongpassword');
+      await user.click(screen.getByRole('button', { name: 'Login' }));
+
+      await waitFor(() => {
+        expect(screen.getByText('Invalid credentials')).toBeInTheDocument();
+      });
+
+      expect(localStorageMock.setItem).not.toHaveBeenCalled();
+    });
+
+    test('network error shows error message', async () => {
+      const user = userEvent.setup();
+
+      fetch.mockRejectedValue(new Error('Network error'));
+
+      render(<LoginPage />);
+
+      await user.type(screen.getByLabelText('Email:'), 'test@example.com');
+      await user.type(screen.getByLabelText('Password:'), 'password123');
+      await user.click(screen.getByRole('button', { name: 'Login' }));
+
+      await waitFor(() => {
+        expect(screen.getByText('Network error. Please try again.')).toBeInTheDocument();
+      });
+    });
+
+    test('button is disabled during loading', async () => {
+      const user = userEvent.setup();
+
+      // Mock a slow response
+      fetch.mockImplementation(() =>
+        new Promise(resolve =>
+          setTimeout(() => resolve({
+            ok: true,
+            json: async () => ({ token: 'token' })
+          }), 100)
+        )
+      );
+
+      render(<LoginPage />);
+
+      await user.type(screen.getByLabelText('Email:'), 'test@example.com');
+      await user.type(screen.getByLabelText('Password:'), 'password123');
+
+      const submitButton = screen.getByRole('button', { name: 'Login' });
+      await user.click(submitButton);
+
+      expect(screen.getByRole('button', { name: 'Logging in...' })).toBeDisabled();
+
+      await waitFor(() => {
+        expect(screen.getByText('Login Successful!')).toBeInTheDocument();
+      });
+    });
+  });
+
+  // Accessibility Tests
+  describe('Accessibility', () => {
+    test('error messages have proper ARIA attributes', async () => {
+      const user = userEvent.setup();
+      render(<LoginPage />);
+
+      await user.click(screen.getByRole('button', { name: 'Login' }));
+
+      const emailError = screen.getByText('Email is required');
+      const passwordError = screen.getByText('Password is required');
+
+      expect(emailError).toHaveAttribute('role', 'alert');
+      expect(passwordError).toHaveAttribute('role', 'alert');
+      expect(emailError).toHaveAttribute('id', 'email-error');
+      expect(passwordError).toHaveAttribute('id', 'password-error');
+
+      const emailInput = screen.getByLabelText('Email:');
+      const passwordInput = screen.getByLabelText('Password:');
+
+      expect(emailInput).toHaveAttribute('aria-describedby', 'email-error');
+      expect(passwordInput).toHaveAttribute('aria-describedby', 'password-error');
+    });
+
+    test('form is keyboard navigable', async () => {
+      const user = userEvent.setup();
+      render(<LoginPage />);
+
+      // Tab through form elements
+      await user.tab();
+      expect(screen.getByLabelText('Email:')).toHaveFocus();
+
+      await user.tab();
+      expect(screen.getByLabelText('Password:')).toHaveFocus();
+
+      await user.tab();
+      expect(screen.getByRole('button', { name: 'Login' })).toHaveFocus();
+    });
+  });
+
+  // Edge Cases
+  describe('Edge Cases', () => {
+    test('handles multiple rapid submissions', async () => {
+      const user = userEvent.setup();
+
+      fetch.mockImplementation(() =>
+        new Promise(resolve =>
+          setTimeout(() => resolve({
+            ok: true,
+            json: async () => ({ token: 'token' })
+          }), 100)
+        )
+      );
+
+      render(<LoginPage />);
+
+      await user.type(screen.getByLabelText('Email:'), 'test@example.com');
+      await user.type(screen.getByLabelText('Password:'), 'password123');
+
+      const submitButton = screen.getByRole('button', { name: 'Login' });
+
+      // Rapidly click multiple times
+      await user.click(submitButton);
+      await user.click(submitButton);
+      await user.click(submitButton);
+
+      // Should only make one API call
+      await waitFor(() => {
+        expect(screen.getByText('Login Successful!')).toBeInTheDocument();
+      });
+
+      expect(fetch).toHaveBeenCalledTimes(1);
+    });
+  });
+});
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
