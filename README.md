@@ -92,7 +92,7 @@
 | React Core Concepts | [useState for State Management](#usestate-for-state-management) |
 | React Core Concepts | [Handling User Input in Forms](#handling-user-input-in-forms) |
 | React Core Concepts | [Rendering Lists with map()](#rendering-lists-with-map) |
-| React Core Concepts | [Mastering Props: Passing Data](#Mastering-Props:-Passing-Data) |
+| React Core Concepts | [Mastering Props Passing Data](#Mastering-Props-Passing-Data) |
 | React Core Concepts | [Web DevTools Deep Dive](#web-devtools-deep-dive) |
 | Component Patterns & State | Building Reusable Components|
 | Component Patterns & State | Rendering & Managing Task Cards |
@@ -120,7 +120,7 @@
 
 | Topic | Subtopic |
 |-------|----------|
-| Advanced React Concepts | React Design Patterns: Container-Presentational |
+| Advanced React Concepts | React Design Patterns Container Presentational |
 | Advanced React Concepts | HOC |
 | Advanced React Concepts | Custom Hooks |
 | Advanced React Concepts | Deep Dive into Hooks: useEffect |
@@ -130,11 +130,13 @@
 | Advanced React Concepts | useCallback |
 | Advanced React Concepts | useContext |
 | Advanced React Concepts | useReducer |
+
 | Advanced React Concepts | React 19 Hooks: useActionState |
 | Advanced React Concepts | useFormStatus |
 | Advanced React Concepts | useOptimistic |
 | Advanced React Concepts | use() API |
 | Advanced React Concepts | Passing Refs as Props |
+
 | Advanced React Concepts | React as a Wrapper |
 | Advanced React Concepts | Reconciliation & How React Works Under the Hood |
 | Advanced React Concepts | Prop Drilling |
@@ -1203,3 +1205,3210 @@ function DebuggingExample() {
 ##
 
 <br>
+
+### Building Reusable Components
+
+It's like creating a magic template for making toys - once you design the perfect toy robot template, you can create hundreds of different robots just by changing their colors, sizes, or special features!
+
+**Key Points:**
+- Components should do one thing well (Single Responsibility Principle)
+- Use props to make components flexible and customizable
+- Keep components small and focused
+- Think about what parts can be reused across your app
+
+**Real-life example:** Like creating a cookie cutter - once you have the shape, you can make cookies with different flavors, colors, or decorations using the same basic template.
+
+```javascript
+// Reusable Button Component
+function Button({
+  text,
+  color = "blue",
+  size = "medium",
+  onClick,
+  disabled = false
+}) {
+  const sizeClasses = {
+    small: "px-2 py-1 text-sm",
+    medium: "px-4 py-2 text-base",
+    large: "px-6 py-3 text-lg"
+  };
+
+  return (
+    <button
+      className={`${sizeClasses[size]} bg-${color}-500 text-white rounded hover:bg-${color}-600 disabled:opacity-50`}
+      onClick={onClick}
+      disabled={disabled}
+    >
+      {text}
+    </button>
+  );
+}
+
+// Reusable Card Component
+function Card({ title, children, className = "" }) {
+  return (
+    <div className={`bg-white shadow-md rounded-lg p-4 ${className}`}>
+      {title && <h3 className="text-lg font-bold mb-2">{title}</h3>}
+      {children}
+    </div>
+  );
+}
+
+// Using the reusable components
+function App() {
+  return (
+    <div>
+      <Card title="My Profile">
+        <p>Welcome to my profile!</p>
+        <Button text="Edit Profile" color="green" onClick={() => alert("Edit!")} />
+        <Button text="Delete" color="red" size="small" onClick={() => alert("Delete!")} />
+      </Card>
+    </div>
+  );
+}
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### Rendering & Managing Task Cards
+
+It's like having a bulletin board where you can pin up different task cards, and each card shows the task details, status, and has buttons to interact with it!
+
+**Key Points:**
+- Each task is represented as a card component
+- Cards display task information clearly
+- Use state to manage list of tasks
+- Map through tasks to render multiple cards
+
+**Real-life example:** Like having a collection of Pokemon cards where each card shows different information (name, type, powers) and you can organize them in different ways.
+
+```javascript
+import { useState } from 'react';
+
+// Task Card Component
+function TaskCard({ task, onEdit, onDelete, onToggleComplete }) {
+  return (
+    <div className={`p-4 border rounded-lg shadow-sm ${task.completed ? 'bg-green-50 border-green-200' : 'bg-white border-gray-200'}`}>
+      <div className="flex justify-between items-start">
+        <div className="flex-1">
+          <h3 className={`font-semibold ${task.completed ? 'line-through text-gray-500' : 'text-gray-800'}`}>
+            {task.title}
+          </h3>
+          <p className="text-sm text-gray-600 mt-1">{task.description}</p>
+          <div className="flex gap-2 mt-2">
+            {task.tags.map(tag => (
+              <span key={tag} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
+                {tag}
+              </span>
+            ))}
+          </div>
+          <p className="text-xs text-gray-400 mt-2">Due: {task.dueDate}</p>
+        </div>
+
+        <div className="flex gap-2 ml-4">
+          <button
+            onClick={() => onToggleComplete(task.id)}
+            className={`px-3 py-1 rounded text-sm ${
+              task.completed
+                ? 'bg-yellow-500 text-white hover:bg-yellow-600'
+                : 'bg-green-500 text-white hover:bg-green-600'
+            }`}
+          >
+            {task.completed ? 'Undo' : 'Complete'}
+          </button>
+          <button
+            onClick={() => onEdit(task.id)}
+            className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
+          >
+            Edit
+          </button>
+          <button
+            onClick={() => onDelete(task.id)}
+            className="px-3 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Main Task Manager Component
+function TaskManager() {
+  const [tasks, setTasks] = useState([
+    {
+      id: 1,
+      title: "Learn React Components",
+      description: "Understand how to build reusable components",
+      tags: ["react", "learning"],
+      dueDate: "2023-12-31",
+      completed: false
+    },
+    {
+      id: 2,
+      title: "Build Todo App",
+      description: "Create a complete todo application",
+      tags: ["project", "javascript"],
+      dueDate: "2023-11-15",
+      completed: true
+    }
+  ]);
+
+  const handleEdit = (taskId) => {
+    console.log("Editing task:", taskId);
+    // Add edit functionality here
+  };
+
+  const handleDelete = (taskId) => {
+    setTasks(tasks.filter(task => task.id !== taskId));
+  };
+
+  const handleToggleComplete = (taskId) => {
+    setTasks(tasks.map(task =>
+      task.id === taskId
+        ? { ...task, completed: !task.completed }
+        : task
+    ));
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-6">My Tasks</h1>
+      <div className="space-y-4">
+        {tasks.map(task => (
+          <TaskCard
+            key={task.id}
+            task={task}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onToggleComplete={handleToggleComplete}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### Delete Functionality for Tasks
+
+It's like having a magic eraser that can remove specific drawings from your sketchbook - you point at what you want to delete, confirm you really want it gone, and *poof* it disappears!
+
+**Key Points:**
+- Use filter() to remove items from arrays
+- Always confirm before deleting (user experience)
+- Update state immutably (don't modify original array)
+- Consider undo functionality for better UX
+
+**Real-life example:** Like removing a specific photo from your photo album - you find the photo, decide to remove it, and the album reorganizes itself automatically.
+
+```javascript
+import { useState } from 'react';
+
+function TaskList() {
+  const [tasks, setTasks] = useState([
+    { id: 1, title: "Learn React", completed: false },
+    { id: 2, title: "Build a project", completed: false },
+    { id: 3, title: "Practice coding", completed: true }
+  ]);
+
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
+
+  // Simple delete function
+  const deleteTask = (taskId) => {
+    setTasks(tasks.filter(task => task.id !== taskId));
+  };
+
+  // Delete with confirmation
+  const deleteTaskWithConfirm = (taskId) => {
+    if (window.confirm("Are you sure you want to delete this task?")) {
+      deleteTask(taskId);
+    }
+  };
+
+  // Delete with custom confirmation modal
+  const showDeleteModal = (taskId) => {
+    setShowDeleteConfirm(taskId);
+  };
+
+  const confirmDelete = () => {
+    if (showDeleteConfirm) {
+      deleteTask(showDeleteConfirm);
+      setShowDeleteConfirm(null);
+    }
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteConfirm(null);
+  };
+
+  return (
+    <div className="p-6">
+      <h2 className="text-2xl font-bold mb-4">Task List</h2>
+
+      {/* Task List */}
+      <div className="space-y-2">
+        {tasks.map(task => (
+          <div key={task.id} className="flex items-center justify-between p-3 border rounded">
+            <span className={task.completed ? 'line-through text-gray-500' : ''}>
+              {task.title}
+            </span>
+            <div className="space-x-2">
+              {/* Simple delete button */}
+              <button
+                onClick={() => deleteTaskWithConfirm(task.id)}
+                className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                Quick Delete
+              </button>
+
+              {/* Delete with modal */}
+              <button
+                onClick={() => showDeleteModal(task.id)}
+                className="px-3 py-1 bg-orange-500 text-white rounded hover:bg-orange-600"
+              >
+                Delete with Modal
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Custom Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h3 className="text-lg font-semibold mb-4">Confirm Delete</h3>
+            <p className="mb-4">Are you sure you want to delete this task? This action cannot be undone.</p>
+            <div className="flex gap-3">
+              <button
+                onClick={confirmDelete}
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                Yes, Delete
+              </button>
+              <button
+                onClick={cancelDelete}
+                className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Advanced: Delete with Undo functionality
+function TaskListWithUndo() {
+  const [tasks, setTasks] = useState([
+    { id: 1, title: "Learn React", completed: false },
+    { id: 2, title: "Build a project", completed: false }
+  ]);
+  const [deletedTask, setDeletedTask] = useState(null);
+  const [showUndo, setShowUndo] = useState(false);
+
+  const deleteTaskWithUndo = (taskId) => {
+    const taskToDelete = tasks.find(task => task.id === taskId);
+    const updatedTasks = tasks.filter(task => task.id !== taskId);
+
+    setTasks(updatedTasks);
+    setDeletedTask(taskToDelete);
+    setShowUndo(true);
+
+    // Auto-hide undo after 5 seconds
+    setTimeout(() => {
+      setShowUndo(false);
+      setDeletedTask(null);
+    }, 5000);
+  };
+
+  const undoDelete = () => {
+    if (deletedTask) {
+      setTasks([...tasks, deletedTask]);
+      setDeletedTask(null);
+      setShowUndo(false);
+    }
+  };
+
+  return (
+    <div className="p-6">
+      {/* Undo notification */}
+      {showUndo && (
+        <div className="mb-4 p-3 bg-yellow-100 border-l-4 border-yellow-500 flex justify-between items-center">
+          <span>Task "{deletedTask?.title}" was deleted</span>
+          <button
+            onClick={undoDelete}
+            className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
+          >
+            Undo
+          </button>
+        </div>
+      )}
+
+      {/* Tasks */}
+      <div className="space-y-2">
+        {tasks.map(task => (
+          <div key={task.id} className="flex items-center justify-between p-3 border rounded">
+            <span>{task.title}</span>
+            <button
+              onClick={() => deleteTaskWithUndo(task.id)}
+              className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+            >
+              Delete
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### Persisting Tasks in Local Storage
+
+It's like having a magic notebook that automatically saves everything you write, so even if you close the notebook and come back later, all your notes are still there!
+
+**Key Points:**
+- localStorage saves data in the browser permanently
+- Data persists even after closing the browser
+- Always handle JSON parsing errors
+- Sync state with localStorage on every change
+
+**Real-life example:** Like having a diary that magically saves your entries and remembers them even if you put it away for months.
+
+```javascript
+import { useState, useEffect } from 'react';
+
+function TaskAppWithStorage() {
+  // Initialize state from localStorage or use default
+  const [tasks, setTasks] = useState(() => {
+    try {
+      const savedTasks = localStorage.getItem('tasks');
+      return savedTasks ? JSON.parse(savedTasks) : [];
+    } catch (error) {
+      console.error('Error loading tasks from localStorage:', error);
+      return [];
+    }
+  });
+
+  // Save to localStorage whenever tasks change
+  useEffect(() => {
+    try {
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+    } catch (error) {
+      console.error('Error saving tasks to localStorage:', error);
+    }
+  }, [tasks]);
+
+  // Add new task
+  const addTask = (taskText) => {
+    const newTask = {
+      id: Date.now(), // Simple ID generation
+      text: taskText,
+      completed: false,
+      createdAt: new Date().toISOString()
+    };
+    setTasks([...tasks, newTask]);
+  };
+
+  // Toggle task completion
+  const toggleTask = (taskId) => {
+    setTasks(tasks.map(task =>
+      task.id === taskId
+        ? { ...task, completed: !task.completed }
+        : task
+    ));
+  };
+
+  // Delete task
+  const deleteTask = (taskId) => {
+    setTasks(tasks.filter(task => task.id !== taskId));
+  };
+
+  // Clear all tasks
+  const clearAllTasks = () => {
+    if (window.confirm('Are you sure you want to clear all tasks?')) {
+      setTasks([]);
+      localStorage.removeItem('tasks'); // Optional: remove from storage completely
+    }
+  };
+
+  return (
+    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
+      <h1 className="text-2xl font-bold mb-4">My Persistent Tasks</h1>
+
+      {/* Add Task Form */}
+      <TaskForm onAddTask={addTask} />
+
+      {/* Task Count */}
+      <div className="mb-4 text-sm text-gray-600">
+        Total: {tasks.length} tasks ({tasks.filter(t => !t.completed).length} pending)
+      </div>
+
+      {/* Task List */}
+      <div className="space-y-2 mb-4">
+        {tasks.length === 0 ? (
+          <p className="text-gray-500 text-center py-4">No tasks yet. Add one above!</p>
+        ) : (
+          tasks.map(task => (
+            <TaskItem
+              key={task.id}
+              task={task}
+              onToggle={() => toggleTask(task.id)}
+              onDelete={() => deleteTask(task.id)}
+            />
+          ))
+        )}
+      </div>
+
+      {/* Clear All Button */}
+      {tasks.length > 0 && (
+        <button
+          onClick={clearAllTasks}
+          className="w-full px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+        >
+          Clear All Tasks
+        </button>
+      )}
+    </div>
+  );
+}
+
+// Task Form Component
+function TaskForm({ onAddTask }) {
+  const [inputValue, setInputValue] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (inputValue.trim()) {
+      onAddTask(inputValue.trim());
+      setInputValue('');
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="mb-4">
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          placeholder="Add a new task..."
+          className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+        />
+        <button
+          type="submit"
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
+          disabled={!inputValue.trim()}
+        >
+          Add
+        </button>
+      </div>
+    </form>
+  );
+}
+
+// Task Item Component
+function TaskItem({ task, onToggle, onDelete }) {
+  return (
+    <div className="flex items-center gap-3 p-3 border rounded-lg">
+      <input
+        type="checkbox"
+        checked={task.completed}
+        onChange={onToggle}
+        className="w-4 h-4"
+      />
+      <span className={`flex-1 ${task.completed ? 'line-through text-gray-500' : ''}`}>
+        {task.text}
+      </span>
+      <button
+        onClick={onDelete}
+        className="px-2 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600"
+      >
+        Delete
+      </button>
+    </div>
+  );
+}
+
+// Advanced: Custom hook for localStorage
+function useLocalStorage(key, initialValue) {
+  // Initialize state with value from localStorage or initialValue
+  const [storedValue, setStoredValue] = useState(() => {
+    try {
+      const item = window.localStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
+    } catch (error) {
+      console.error(`Error reading localStorage key "${key}":`, error);
+      return initialValue;
+    }
+  });
+
+  // Function to set value in both state and localStorage
+  const setValue = (value) => {
+    try {
+      // Allow value to be a function so we have the same API as useState
+      const valueToStore = value instanceof Function ? value(storedValue) : value;
+      setStoredValue(valueToStore);
+      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+    } catch (error) {
+      console.error(`Error setting localStorage key "${key}":`, error);
+    }
+  };
+
+  return [storedValue, setValue];
+}
+
+// Using the custom hook
+function TaskAppWithCustomHook() {
+  const [tasks, setTasks] = useLocalStorage('myTasks', []);
+
+  const addTask = (text) => {
+    const newTask = {
+      id: Date.now(),
+      text,
+      completed: false
+    };
+    setTasks([...tasks, newTask]);
+  };
+
+  return (
+    <div>
+      <h1>Tasks with Custom Hook</h1>
+      {/* Rest of the component */}
+    </div>
+  );
+}
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### React Strict Mode
+
+Strict Mode is like having a super careful teacher who double-checks your work and points out potential problems before they become big issues!
+
+**Key Points:**
+- Helps catch bugs early in development
+- Renders components twice to detect side effects
+- Warns about unsafe lifecycle methods
+- Only runs in development mode (not production)
+
+**Real-life example:** Like having a spell-checker that not only finds typos but also suggests better ways to write your sentences.
+
+```javascript
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+
+// Enabling Strict Mode for your entire app
+function App() {
+  return (
+    <StrictMode>
+      <Header />
+      <MainContent />
+      <Footer />
+    </StrictMode>
+  );
+}
+
+const root = createRoot(document.getElementById('root'));
+root.render(<App />);
+
+// Or enable it just for specific components
+function MyApp() {
+  return (
+    <div>
+      <Header />
+      <StrictMode>
+        <ExperimentalComponent /> {/* Only this component runs in strict mode */}
+      </StrictMode>
+      <Footer />
+    </div>
+  );
+}
+
+// Example: Component with side effects (Strict Mode will help catch this)
+function ProblematicComponent() {
+  const [count, setCount] = useState(0);
+
+  // ❌ BAD: Side effect in render (Strict Mode will run this twice)
+  console.log('Component rendering...'); // This will log twice in Strict Mode
+
+  // ❌ BAD: Direct DOM manipulation in render
+  // document.title = `Count: ${count}`; // Don't do this!
+
+  // ✅ GOOD: Side effects in useEffect
+  useEffect(() => {
+    console.log('Effect running...'); // This is fine
+    document.title = `Count: ${count}`;
+  }, [count]);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  );
+}
+
+// Example: What Strict Mode helps you catch
+function ComponentWithProblems() {
+  const [users, setUsers] = useState([]);
+
+  // ❌ BAD: This will cause problems in Strict Mode
+  const fetchUsers = () => {
+    fetch('/api/users')
+      .then(response => response.json())
+      .then(data => {
+        setUsers(data); // This might set state after component unmounts
+      });
+  };
+
+  // ✅ GOOD: Proper cleanup
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch('/api/users')
+      .then(response => response.json())
+      .then(data => {
+        if (!cancelled) { // Only set state if component is still mounted
+          setUsers(data);
+        }
+      });
+
+    return () => {
+      cancelled = true; // Cleanup function
+    };
+  }, []);
+
+  return (
+    <ul>
+      {users.map(user => (
+        <li key={user.id}>{user.name}</li>
+      ))}
+    </ul>
+  );
+}
+
+// Example: Creating React app with Strict Mode (index.js)
+/*
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App';
+
+const root = createRoot(document.getElementById('root'));
+root.render(
+  <StrictMode>
+    <App />
+  </StrictMode>
+);
+*/
+
+// What Strict Mode does:
+// 1. Renders components twice to catch side effects
+// 2. Warns about deprecated APIs
+// 3. Helps identify unsafe lifecycles
+// 4. Warns about legacy string ref API usage
+// 5. Detects unexpected side effects
+
+// Common issues Strict Mode helps catch:
+function ExampleIssues() {
+  const [data, setData] = useState([]);
+
+  // Issue 1: Impure render function
+  const randomId = Math.random(); // ❌ This changes on every render
+
+  // Issue 2: Missing cleanup in useEffect
+  useEffect(() => {
+    const timer = setInterval(() => {
+      console.log('Timer tick');
+    }, 1000);
+
+    // ❌ Missing cleanup - memory leak!
+    // return () => clearInterval(timer); // Should have this
+  }, []);
+
+  // Issue 3: Mutating props or state directly
+  const handleAddItem = (newItem) => {
+    data.push(newItem); // ❌ Mutating state directly
+    setData(data); // Won't trigger re-render properly
+
+    // ✅ Should be:
+    // setData([...data, newItem]);
+  };
+
+  return <div>Component with issues</div>;
+}
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### Tag Selection & Filtering UI
+
+It's like having a magical sorting hat for your tasks - you can pick different colored tags and only see the tasks that match those colors, making it super easy to find exactly what you're looking for!
+
+**Key Points:**
+- Tags help categorize and organize tasks
+- Filtering allows users to focus on specific categories
+- Use state to track selected tags and filter logic
+- Visual feedback shows which tags are active
+
+**Real-life example:** Like organizing your clothes by color or type - you can choose to see only "school clothes" or "play clothes" when you're getting dressed.
+
+```javascript
+import { useState } from 'react';
+
+function TaskManagerWithTags() {
+  const [tasks, setTasks] = useState([
+    { id: 1, title: "Learn React Components", tags: ["react", "learning", "frontend"], completed: false },
+    { id: 2, title: "Build API endpoint", tags: ["backend", "api", "work"], completed: false },
+    { id: 3, title: "Design homepage", tags: ["design", "frontend", "work"], completed: true },
+    { id: 4, title: "Study for exam", tags: ["learning", "personal"], completed: false },
+    { id: 5, title: "Fix bug in login", tags: ["bug", "backend", "urgent"], completed: false }
+  ]);
+
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [filterMode, setFilterMode] = useState('all'); // 'all', 'any', 'none'
+
+  // Get all unique tags from all tasks
+  const allTags = [...new Set(tasks.flatMap(task => task.tags))];
+
+  // Filter tasks based on selected tags
+  const filteredTasks = tasks.filter(task => {
+    if (selectedTags.length === 0) return true;
+
+    switch (filterMode) {
+      case 'all':
+        return selectedTags.every(tag => task.tags.includes(tag));
+      case 'any':
+        return selectedTags.some(tag => task.tags.includes(tag));
+      case 'none':
+        return !selectedTags.some(tag => task.tags.includes(tag));
+      default:
+        return true;
+    }
+  });
+
+  // Toggle tag selection
+  const toggleTag = (tag) => {
+    setSelectedTags(prev =>
+      prev.includes(tag)
+        ? prev.filter(t => t !== tag)
+        : [...prev, tag]
+    );
+  };
+
+  // Clear all selected tags
+  const clearAllTags = () => {
+    setSelectedTags([]);
+  };
+
+  // Predefined tag colors for better UI
+  const tagColors = {
+    react: "bg-blue-500",
+    learning: "bg-green-500",
+    frontend: "bg-purple-500",
+    backend: "bg-orange-500",
+    api: "bg-yellow-500",
+    work: "bg-red-500",
+    design: "bg-pink-500",
+    personal: "bg-gray-500",
+    bug: "bg-red-600",
+    urgent: "bg-red-700"
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-6">Task Manager with Tags</h1>
+
+      {/* Tag Filter Section */}
+      <div className="bg-gray-50 p-4 rounded-lg mb-6">
+        <h3 className="font-semibold mb-3">Filter by Tags:</h3>
+
+        {/* Filter Mode Selection */}
+        <div className="mb-3">
+          <label className="text-sm font-medium text-gray-700 mr-3">Filter Mode:</label>
+          <select
+            value={filterMode}
+            onChange={(e) => setFilterMode(e.target.value)}
+            className="px-2 py-1 border rounded text-sm"
+          >
+            <option value="any">Any selected tag (OR)</option>
+            <option value="all">All selected tags (AND)</option>
+            <option value="none">None of selected tags (NOT)</option>
+          </select>
+        </div>
+
+        {/* Tag Selection */}
+        <div className="flex flex-wrap gap-2 mb-3">
+          {allTags.map(tag => (
+            <TagButton
+              key={tag}
+              tag={tag}
+              isSelected={selectedTags.includes(tag)}
+              onClick={() => toggleTag(tag)}
+              color={tagColors[tag] || "bg-gray-400"}
+            />
+          ))}
+        </div>
+
+        {/* Clear and Info */}
+        <div className="flex justify-between items-center text-sm text-gray-600">
+          <span>
+            {selectedTags.length > 0
+              ? `Showing ${filteredTasks.length} of ${tasks.length} tasks`
+              : `Showing all ${tasks.length} tasks`
+            }
+          </span>
+          {selectedTags.length > 0 && (
+            <button
+              onClick={clearAllTags}
+              className="text-blue-500 hover:text-blue-700"
+            >
+              Clear filters
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Selected Tags Display */}
+      {selectedTags.length > 0 && (
+        <div className="mb-4">
+          <span className="text-sm font-medium text-gray-700 mr-2">Active filters:</span>
+          {selectedTags.map(tag => (
+            <span key={tag} className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 text-sm rounded mr-2 mb-1">
+              {tag}
+              <button
+                onClick={() => toggleTag(tag)}
+                className="text-blue-600 hover:text-blue-800"
+              >
+                ×
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* Task List */}
+      <div className="space-y-3">
+        {filteredTasks.length === 0 ? (
+          <div className="text-center py-8 text-gray-500">
+            {selectedTags.length > 0
+              ? "No tasks match the selected filters"
+              : "No tasks available"
+            }
+          </div>
+        ) : (
+          filteredTasks.map(task => (
+            <TaskCard key={task.id} task={task} />
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Tag Button Component
+function TagButton({ tag, isSelected, onClick, color }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`
+        px-3 py-1 rounded-full text-sm font-medium transition-all
+        ${isSelected
+          ? `${color} text-white shadow-md transform scale-105`
+          : 'bg-white text-gray-700 border hover:bg-gray-50'
+        }
+      `}
+    >
+      {tag}
+      {isSelected && <span className="ml-1">✓</span>}
+    </button>
+  );
+}
+
+// Task Card Component
+function TaskCard({ task }) {
+  const tagColors = {
+    react: "bg-blue-500",
+    learning: "bg-green-500",
+    frontend: "bg-purple-500",
+    backend: "bg-orange-500",
+    api: "bg-yellow-500",
+    work: "bg-red-500",
+    design: "bg-pink-500",
+    personal: "bg-gray-500",
+    bug: "bg-red-600",
+    urgent: "bg-red-700"
+  };
+
+  return (
+    <div className={`p-4 border rounded-lg ${task.completed ? 'bg-green-50 border-green-200' : 'bg-white border-gray-200'}`}>
+      <h4 className={`font-semibold ${task.completed ? 'line-through text-gray-500' : 'text-gray-800'}`}>
+        {task.title}
+      </h4>
+      <div className="flex flex-wrap gap-1 mt-2">
+        {task.tags.map(tag => (
+          <span
+            key={tag}
+            className={`px-2 py-1 text-xs text-white rounded ${tagColors[tag] || 'bg-gray-400'}`}
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Advanced: Tag Input Component for adding new tags
+function TagInput({ onAddTag, existingTags = [] }) {
+  const [inputValue, setInputValue] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setInputValue(value);
+
+    // Show suggestions based on existing tags
+    if (value.length > 0) {
+      const filteredSuggestions = existingTags.filter(tag =>
+        tag.toLowerCase().includes(value.toLowerCase()) && !value.split(',').includes(tag)
+      );
+      setSuggestions(filteredSuggestions);
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+  const handleAddTag = (tagToAdd = null) => {
+    const tag = tagToAdd || inputValue.trim();
+    if (tag && !existingTags.includes(tag)) {
+      onAddTag(tag);
+      setInputValue('');
+      setSuggestions([]);
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      handleAddTag();
+    }
+  };
+
+  return (
+    <div className="relative">
+      <input
+        type="text"
+        value={inputValue}
+        onChange={handleInputChange}
+        onKeyPress={handleKeyPress}
+        placeholder="Add tags (press Enter or comma to add)"
+        className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
+      />
+
+      {suggestions.length > 0 && (
+        <div className="absolute z-10 w-full bg-white border border-gray-300 rounded-b shadow-lg max-h-40 overflow-y-auto">
+          {suggestions.map(suggestion => (
+            <button
+              key={suggestion}
+              onClick={() => handleAddTag(suggestion)}
+              className="w-full text-left px-3 py-2 hover:bg-gray-100"
+            >
+              {suggestion}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### Customizing Fonts & Styling (Tailwind, MaterialUI)
+
+It's like having a massive box of art supplies and design tools - you can make your web app look exactly how you want, whether you prefer the quick stickers approach (Tailwind) or the fancy art kit approach (Material-UI)!
+
+**Key Points:**
+- Tailwind: Utility-first CSS for rapid styling
+- Material-UI: Pre-built components with Google's design system
+- Both approaches have different philosophies and use cases
+- Choose based on your project needs and team preferences
+
+**Real-life example:** Tailwind is like having individual colored pencils for every tiny detail, while Material-UI is like having pre-made sticker sets that look professional right away.
+
+```javascript
+import { useState } from 'react';
+// For Material-UI (install: npm install @mui/material @emotion/react @emotion/styled)
+import {
+  Button,
+  Card,
+  CardContent,
+  Typography,
+  TextField,
+  Chip,
+  Box,
+  ThemeProvider,
+  createTheme,
+  CssBaseline
+} from '@mui/material';
+
+// TAILWIND CSS APPROACH
+function TailwindTaskApp() {
+  const [tasks, setTasks] = useState([
+    { id: 1, title: "Learn Tailwind CSS", status: "pending", priority: "high" },
+    { id: 2, title: "Build responsive design", status: "completed", priority: "medium" }
+  ]);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+      {/* Header with custom fonts */}
+      <header className="text-center mb-8">
+        <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-2 font-serif">
+          My Stylish Tasks
+        </h1>
+        <p className="text-lg text-gray-600 font-light">
+          Built with Tailwind CSS magic ✨
+        </p>
+      </header>
+
+      {/* Custom styled container */}
+      <div className="max-w-4xl mx-auto">
+        {/* Add task form with custom styling */}
+        <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 mb-6 shadow-xl border border-white/20">
+          <form className="flex gap-4">
+            <input
+              type="text"
+              placeholder="Add a new task..."
+              className="
+                flex-1 px-4 py-3 rounded-xl border-2 border-gray-200
+                focus:border-blue-500 focus:ring-2 focus:ring-blue-200
+                outline-none transition-all duration-300
+                font-medium text-gray-700 placeholder-gray-400
+              "
+            />
+            <button className="
+              px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-600
+              text-white font-semibold rounded-xl
+              hover:from-blue-600 hover:to-purple-700
+              transform hover:scale-105 transition-all duration-300
+              shadow-lg hover:shadow-xl
+            ">
+              Add Task
+            </button>
+          </form>
+        </div>
+
+        {/* Task grid with responsive design */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {tasks.map(task => (
+            <TailwindTaskCard key={task.id} task={task} />
+          ))}
+        </div>
+
+        {/* Custom statistics card */}
+        <div className="mt-8 bg-white/60 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
+          <h3 className="text-2xl font-bold text-gray-800 mb-4">Statistics</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <StatCard label="Total" value="12" color="blue" />
+            <StatCard label="Completed" value="8" color="green" />
+            <StatCard label="Pending" value="4" color="yellow" />
+            <StatCard label="High Priority" value="2" color="red" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Tailwind Task Card Component
+function TailwindTaskCard({ task }) {
+  const priorityColors = {
+    high: "bg-red-100 text-red-800 border-red-200",
+    medium: "bg-yellow-100 text-yellow-800 border-yellow-200",
+    low: "bg-green-100 text-green-800 border-green-200"
+  };
+
+  return (
+    <div className="
+      group bg-white/80 backdrop-blur-sm rounded-xl p-5 shadow-lg
+      hover:shadow-2xl hover:bg-white/90
+      transform hover:-translate-y-2 transition-all duration-300
+      border border-white/30
+    ">
+      <div className="flex justify-between items-start mb-3">
+        <h4 className="font-bold text-gray-800 text-lg group-hover:text-blue-600 transition-colors">
+          {task.title}
+        </h4>
+        <span className={`
+          px-3 py-1 rounded-full text-xs font-medium border
+          ${priorityColors[task.priority]}
+        `}>
+          {task.priority}
+        </span>
+      </div>
+
+      <div className="flex justify-between items-center">
+        <span className={`
+          px-3 py-1 rounded-full text-sm font-medium
+          ${task.status === 'completed'
+            ? 'bg-green-100 text-green-800'
+            : 'bg-blue-100 text-blue-800'
+          }
+        `}>
+          {task.status}
+        </span>
+
+        <div className="flex gap-2">
+          <button className="
+            p-2 rounded-lg bg-blue-500 text-white
+            hover:bg-blue-600 transform hover:scale-110
+            transition-all duration-200
+          ">
+            ✏️
+          </button>
+          <button className="
+            p-2 rounded-lg bg-red-500 text-white
+            hover:bg-red-600 transform hover:scale-110
+            transition-all duration-200
+          ">
+            🗑️
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Stat Card Component
+function StatCard({ label, value, color }) {
+  const colorClasses = {
+    blue: "bg-blue-500",
+    green: "bg-green-500",
+    yellow: "bg-yellow-500",
+    red: "bg-red-500"
+  };
+
+  return (
+    <div className="text-center p-4 bg-white/50 rounded-xl">
+      <div className={`w-12 h-12 mx-auto mb-2 rounded-full ${colorClasses[color]} flex items-center justify-center`}>
+        <span className="text-white font-bold text-lg">{value}</span>
+      </div>
+      <p className="text-gray-600 font-medium">{label}</p>
+    </div>
+  );
+}
+
+// MATERIAL-UI APPROACH
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#1976d2',
+    },
+    secondary: {
+      main: '#dc004e',
+    },
+  },
+  typography: {
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    h4: {
+      fontWeight: 600,
+    },
+  },
+});
+
+function MaterialUITaskApp() {
+  const [tasks, setTasks] = useState([
+    { id: 1, title: "Learn Material-UI", status: "pending", priority: "high" },
+    { id: 2, title: "Design with components", status: "completed", priority: "medium" }
+  ]);
+
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Box sx={{ minHeight: '100vh', bgcolor: 'grey.50', p: 3 }}>
+        {/* Header */}
+        <Box textAlign="center" mb={4}>
+          <Typography variant="h3" component="h1" gutterBottom fontWeight="bold">
+            Material-UI Task Manager
+          </Typography>
+          <Typography variant="h6" color="text.secondary">
+            Beautiful components out of the box
+          </Typography>
+        </Box>
+
+        {/* Add task form */}
+        <Box maxWidth="md" mx="auto" mb={4}>
+          <Card elevation={3}>
+            <CardContent>
+              <Box display="flex" gap={2}>
+                <TextField
+                  fullWidth
+                  placeholder="Add a new task..."
+                  variant="outlined"
+                  size="medium"
+                />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  sx={{ minWidth: '120px' }}
+                >
+                  Add Task
+                </Button>
+              </Box>
+            </CardContent>
+          </Card>
+        </Box>
+
+        {/* Task cards */}
+        <Box maxWidth="lg" mx="auto">
+          <Box display="grid" gridTemplateColumns="repeat(auto-fit, minmax(300px, 1fr))" gap={3}>
+            {tasks.map(task => (
+              <MaterialUITaskCard key={task.id} task={task} />
+            ))}
+          </Box>
+        </Box>
+      </Box>
+    </ThemeProvider>
+  );
+}
+
+// Material-UI Task Card Component
+function MaterialUITaskCard({ task }) {
+  const getPriorityColor = (priority) => {
+    switch(priority) {
+      case 'high': return 'error';
+      case 'medium': return 'warning';
+      case 'low': return 'success';
+      default: return 'default';
+    }
+  };
+
+  return (
+    <Card
+      elevation={2}
+      sx={{
+        transition: 'all 0.3s ease',
+        '&:hover': {
+          elevation: 8,
+          transform: 'translateY(-4px)'
+        }
+      }}
+    >
+      <CardContent>
+        <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2}>
+          <Typography variant="h6" component="h3" fontWeight="bold">
+            {task.title}
+          </Typography>
+          <Chip
+            label={task.priority}
+            color={getPriorityColor(task.priority)}
+            size="small"
+            variant="outlined"
+          />
+        </Box>
+
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Chip
+            label={task.status}
+            color={task.status === 'completed' ? 'success' : 'primary'}
+            variant={task.status === 'completed' ? 'filled' : 'outlined'}
+          />
+
+          <Box>
+            <Button size="small" color="primary">
+              Edit
+            </Button>
+            <Button size="small" color="error">
+              Delete
+            </Button>
+          </Box>
+        </Box>
+      </CardContent>
+    </Card>
+  );
+}
+
+// Custom CSS-in-JS approach (Styled Components alternative)
+function CustomStyledApp() {
+  const styles = {
+    container: {
+      fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      padding: '2rem'
+    },
+    header: {
+      textAlign: 'center',
+      color: 'white',
+      marginBottom: '2rem'
+    },
+    title: {
+      fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+      fontWeight: '700',
+      margin: '0 0 0.5rem 0',
+      textShadow: '2px 2px 4px rgba(0,0,0,0.3)'
+    },
+    card: {
+      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+      borderRadius: '1rem',
+      padding: '1.5rem',
+      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+      backdropFilter: 'blur(10px)',
+      border: '1px solid rgba(255, 255, 255, 0.2)',
+      transition: 'all 0.3s ease',
+      cursor: 'pointer'
+    },
+    cardHover: {
+      transform: 'translateY(-5px)',
+      boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)'
+    }
+  };
+
+  return (
+    <div style={styles.container}>
+      <header style={styles.header}>
+        <h1 style={styles.title}>Custom Styled Tasks</h1>
+        <p>Hand-crafted with CSS-in-JS</p>
+      </header>
+
+      {/* Content goes here */}
+    </div>
+  );
+}
+
+// Font loading example (add to your HTML head or CSS)
+/*
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+// Or for Tailwind config:
+module.exports = {
+  theme: {
+    fontFamily: {
+      'sans': ['Inter', 'sans-serif'],
+      'display': ['Poppins', 'sans-serif'],
+      'body': ['Inter', 'sans-serif'],
+    }
+  }
+}
+*/
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+
+### Setting Up Routing (React Router)
+
+Like creating a map for your house - each room has a specific address so visitors know where to go!
+
+**Key Points:**
+- Install `react-router-dom` package
+- Wrap app with `<BrowserRouter>`
+- Define routes with `<Routes>` and `<Route>`
+
+```js
+// 1. Install: npm install react-router-dom
+// 2. Setup in App.js:
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### Not Found Page (React Router)
+
+Like having a "Room not found" sign when someone looks for a room that doesn't exist in your house!
+
+**Key Points:**
+- Use `path="*"` to catch all undefined routes
+- Always put it as the last route
+- Show helpful 404 message
+
+```js
+function NotFound() {
+  return (
+    <div>
+      <h1>404 - Page Not Found</h1>
+      <Link to="/">Go Home</Link>
+    </div>
+  );
+}
+
+// In your Routes:
+<Routes>
+  <Route path="/" element={<Home />} />
+  <Route path="/about" element={<About />} />
+  <Route path="*" element={<NotFound />} /> {/* Always last! */}
+</Routes>
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### SPA with React Router
+
+Like a magic house where rooms change instantly without walking through doors - no page reloads!
+
+**Key Points:**
+- SPA = Single Page Application
+- Use `<Link>` instead of `<a>` tags
+- Navigation happens without page refresh
+
+```js
+import { Link } from 'react-router-dom';
+
+function Navbar() {
+  return (
+    <nav>
+      <Link to="/">Home</Link> {/* ✅ Good - no reload */}
+      <Link to="/about">About</Link>
+      <a href="/contact">Contact</a> {/* ❌ Bad - causes reload */}
+    </nav>
+  );
+}
+
+// Link with styling:
+<Link to="/about" className="nav-link">About Us</Link>
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### Route Parameters & Query Strings
+
+Like having personalized room keys - each person gets their own room number and special preferences!
+
+**Key Points:**
+- `:param` creates dynamic routes
+- `useParams()` gets URL parameters
+- `useSearchParams()` gets query strings (?key=value)
+
+```js
+// Routes with parameters:
+<Routes>
+  <Route path="/user/:id" element={<UserProfile />} />
+  <Route path="/product/:category/:id" element={<Product />} />
+</Routes>
+
+// In UserProfile component:
+import { useParams, useSearchParams } from 'react-router-dom';
+
+function UserProfile() {
+  const { id } = useParams(); // Gets :id from URL
+  const [searchParams] = useSearchParams(); // Gets ?name=john&age=25
+
+  const userName = searchParams.get('name');
+
+  return (
+    <div>
+      <h1>User ID: {id}</h1>
+      <p>Name: {userName}</p>
+    </div>
+  );
+}
+
+// URL: /user/123?name=john&age=25
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### Nested Routing & Programmatic Navigation
+
+Like having rooms inside rooms, and a remote control to instantly teleport between any room!
+
+**Key Points:**
+- Nest routes for layouts and subpages
+- Use `<Outlet />` to render child routes
+- `useNavigate()` for navigation in code
+
+```js
+import { Outlet, useNavigate } from 'react-router-dom';
+
+// Nested Routes Setup:
+<Routes>
+  <Route path="/dashboard" element={<Dashboard />}>
+    <Route path="profile" element={<Profile />} />
+    <Route path="settings" element={<Settings />} />
+  </Route>
+</Routes>
+
+// Dashboard Layout:
+function Dashboard() {
+  return (
+    <div>
+      <h1>Dashboard</h1>
+      <nav>
+        <Link to="profile">Profile</Link>
+        <Link to="settings">Settings</Link>
+      </nav>
+      <Outlet /> {/* Child routes render here */}
+    </div>
+  );
+}
+
+// Programmatic Navigation:
+function LoginForm() {
+  const navigate = useNavigate();
+
+  const handleLogin = () => {
+    // After login logic...
+    navigate('/dashboard'); // Redirect to dashboard
+    // navigate(-1); // Go back
+    // navigate('/home', { replace: true }); // Replace current page
+  };
+
+  return <button onClick={handleLogin}>Login</button>;
+}
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+
+### useEffect & Dependency Array
+
+Like setting up reminders for your robot to do chores whenever something changes!
+
+**Key Points:**
+- `useEffect()` runs code after render (side effects)
+- Dependency array `[]` controls when effect runs
+- Empty `[]` = run once when component loads
+- `[count]` = run when `count` changes
+
+**Real-life example:** Like telling your alarm clock "Ring when it's 7 AM" or "Ring whenever I change the time."
+
+```js
+import { useEffect, useState } from 'react';
+
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  // Run once when component loads
+  useEffect(() => {
+    console.log("Component loaded!");
+  }, []); // Empty array = run once
+
+  // Run every time count changes
+  useEffect(() => {
+    document.title = `Count: ${count}`;
+  }, [count]); // Runs when count changes
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Add</button>
+    </div>
+  );
+}
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### Fetching Data (fetch, Axios)
+
+Like sending your robot to the store to get new supplies - it goes, gets the data, and brings it back!
+
+**Key Points:**
+- Use `fetch()` (built-in) or `axios` (library)
+- Always fetch data inside `useEffect()`
+- Axios is easier and more popular
+- Handle both success and error cases
+
+**Real-life example:** Like ordering food online - you place the order, wait for delivery, and either get your food or an error message.
+
+```js
+import { useState, useEffect } from 'react';
+import axios from 'axios'; // npm install axios
+
+function UserList() {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    // Method 1: Using fetch (built-in)
+    fetch('https://jsonplaceholder.typicode.com/users')
+      .then(response => response.json()) // Convert to JSON
+      .then(data => setUsers(data))
+      .catch(error => console.error('Error:', error));
+  }, []);
+
+  // Method 2: Using axios (easier)
+  useEffect(() => {
+    axios.get('https://jsonplaceholder.typicode.com/users')
+      .then(response => setUsers(response.data)) // axios auto-converts to JSON
+      .catch(error => console.error('Error:', error));
+  }, []);
+
+  return (
+    <ul>
+      {users.map(user => (
+        <li key={user.id}>{user.name}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### Loaders & Error Handling
+
+Like showing a "Loading..." sign while your robot is busy, and an "Oops!" sign if something goes wrong!
+
+**Key Points:**
+- Use 3 states: `loading`, `error`, and `data`
+- Show loading spinner while fetching
+- Display error message if something fails
+- Show data when everything works
+
+**Real-life example:** Like waiting for a webpage to load - you see a spinning wheel, then either the page or an error message.
+
+```js
+import { useState, useEffect } from 'react';
+
+function UserProfile() {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Start loading
+    setLoading(true);
+    setError(null);
+
+    fetch('https://jsonplaceholder.typicode.com/users/1')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('User not found');
+        }
+        return response.json();
+      })
+      .then(data => {
+        setUser(data);
+        setLoading(false); // Stop loading
+      })
+      .catch(err => {
+        setError(err.message);
+        setLoading(false); // Stop loading
+      });
+  }, []);
+
+  // Show loading state
+  if (loading) {
+    return <div>Loading user data... 🔄</div>;
+  }
+
+  // Show error state
+  if (error) {
+    return <div>Error: {error} ❌</div>;
+  }
+
+  // Show success state
+  return (
+    <div>
+      <h1>{user.name} ✅</h1>
+      <p>Email: {user.email}</p>
+    </div>
+  );
+}
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### Promises vs Async/Await
+
+Like asking your robot to promise to finish a task, or just telling it "wait until you're done, then continue!"
+
+**Key Points:**
+- **Promises**: Use `.then()` and `.catch()` (older way)
+- **Async/await**: Looks like normal code (newer, cleaner way)
+- Both handle asynchronous operations
+- Async/await is easier to read and debug
+
+**Real-life example:** Promises are like "I promise to call you back" vs Async/await is like "Wait, let me check and get back to you right now."
+
+```js
+// METHOD 1: Promises (older style)
+function fetchUserWithPromises() {
+  fetch('https://jsonplaceholder.typicode.com/users/1')
+    .then(response => response.json())
+    .then(user => {
+      console.log('User:', user.name);
+      return user;
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+}
+
+// METHOD 2: Async/Await (modern style - RECOMMENDED)
+async function fetchUserWithAsync() {
+  try {
+    const response = await fetch('https://jsonplaceholder.typicode.com/users/1');
+    const user = await response.json();
+    console.log('User:', user.name);
+    return user;
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+// Using in React component
+function UserComponent() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    // Option 1: Create async function inside useEffect
+    const getUser = async () => {
+      try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/users/1');
+        const userData = await response.json();
+        setUser(userData);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+    getUser(); // Call the async function
+  }, []);
+
+  return user ? <h1>{user.name}</h1> : <p>Loading...</p>;
+}
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### POST, PUT, DELETE with Axios
+
+Like sending your robot to add, update, or remove items from your inventory!
+
+**Key Points:**
+- **POST** = Create new data (like adding a new user)
+- **PUT** = Update existing data (like editing a user)
+- **DELETE** = Remove data (like deleting a user)
+- Use axios methods for each operation
+
+**Real-life example:** POST is like adding a new contact to your phone, PUT is like updating their phone number, DELETE is like removing them completely.
+
+```js
+import axios from 'axios';
+
+function UserManager() {
+  const [users, setUsers] = useState([]);
+
+  // CREATE - Add new user (POST)
+  const addUser = async () => {
+    try {
+      const newUser = {
+        name: 'John Doe',
+        email: 'john@example.com'
+      };
+
+      const response = await axios.post('https://jsonplaceholder.typicode.com/users', newUser);
+      console.log('User created:', response.data);
+
+      // Add to local state
+      setUsers([...users, response.data]);
+    } catch (error) {
+      console.error('Error creating user:', error);
+    }
+  };
+
+  // UPDATE - Edit existing user (PUT)
+  const updateUser = async (userId) => {
+    try {
+      const updatedUser = {
+        name: 'John Smith', // Updated name
+        email: 'johnsmith@example.com'
+      };
+
+      const response = await axios.put(`https://jsonplaceholder.typicode.com/users/${userId}`, updatedUser);
+      console.log('User updated:', response.data);
+
+      // Update local state
+      setUsers(users.map(user =>
+        user.id === userId ? response.data : user
+      ));
+    } catch (error) {
+      console.error('Error updating user:', error);
+    }
+  };
+
+  // DELETE - Remove user
+  const deleteUser = async (userId) => {
+    try {
+      await axios.delete(`https://jsonplaceholder.typicode.com/users/${userId}`);
+      console.log('User deleted');
+
+      // Remove from local state
+      setUsers(users.filter(user => user.id !== userId));
+    } catch (error) {
+      console.error('Error deleting user:', error);
+    }
+  };
+
+  return (
+    <div>
+      <button onClick={addUser}>Add User</button>
+      <button onClick={() => updateUser(1)}>Update User 1</button>
+      <button onClick={() => deleteUser(1)}>Delete User 1</button>
+    </div>
+  );
+}
+
+// Quick Reference:
+// axios.get(url)           - GET data
+// axios.post(url, data)    - CREATE data
+// axios.put(url, data)     - UPDATE data
+// axios.delete(url)        - DELETE data
+```
+
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### React Design Patterns: Container-Presentational
+
+Like having a chef (Container) who handles all the cooking logic, and a waiter (Presentational) who just serves the food beautifully!
+
+**Key Points:**
+- **Container Components**: Handle logic, state, and data fetching
+- **Presentational Components**: Just display UI based on props
+- Separates business logic from visual presentation
+- Makes components more reusable and testable
+
+**Real-life example:** Like a restaurant where the chef handles cooking (logic) while the waiter handles serving (presentation).
+
+```js
+// PRESENTATIONAL COMPONENT (UI only)
+function UserCard({ user, onEdit, onDelete }) {
+  return (
+    <div className="user-card">
+      <img src={user.avatar} alt={user.name} />
+      <h3>{user.name}</h3>
+      <p>{user.email}</p>
+      <button onClick={() => onEdit(user.id)}>Edit</button>
+      <button onClick={() => onDelete(user.id)}>Delete</button>
+    </div>
+  );
+}
+
+// CONTAINER COMPONENT (Logic & State)
+function UserCardContainer({ userId }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Fetch user data
+    fetch(`/api/users/${userId}`)
+      .then(res => res.json())
+      .then(userData => {
+        setUser(userData);
+        setLoading(false);
+      });
+  }, [userId]);
+
+  const handleEdit = (id) => {
+    // Edit logic
+    console.log('Editing user:', id);
+  };
+
+  const handleDelete = (id) => {
+    // Delete logic
+    setUser(null);
+    console.log('Deleted user:', id);
+  };
+
+  if (loading) return <div>Loading...</div>;
+
+  return (
+    <UserCard
+      user={user}
+      onEdit={handleEdit}
+      onDelete={handleDelete}
+    />
+  );
+}
+
+// Usage
+function App() {
+  return (
+    <div>
+      <UserCardContainer userId={1} />
+      <UserCardContainer userId={2} />
+    </div>
+  );
+}
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### HOC (Higher-Order Components)
+
+Like a gift wrapper that takes any gift (component) and wraps it with extra features like tracking, authentication, or styling!
+
+**Key Points:**
+- Function that takes a component and returns an enhanced component
+- Used for code reuse and cross-cutting concerns
+- Common uses: authentication, logging, data fetching
+- Think of it as a "component decorator"
+
+**Real-life example:** Like a security guard who checks everyone's ID before letting them into different rooms - same security logic for all rooms.
+
+```js
+// HOC for authentication
+function withAuth(WrappedComponent) {
+  return function AuthenticatedComponent(props) {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+      // Check if user is authenticated
+      const token = localStorage.getItem('token');
+      if (token) {
+        fetch('/api/me', {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(res => res.json())
+        .then(userData => {
+          setUser(userData);
+          setLoading(false);
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+      } else {
+        setLoading(false);
+      }
+    }, []);
+
+    if (loading) return <div>Checking authentication...</div>;
+
+    if (!user) {
+      return <div>Please login to access this page</div>;
+    }
+
+    // Pass all props + user to wrapped component
+    return <WrappedComponent {...props} user={user} />;
+  };
+}
+
+// HOC for loading states
+function withLoading(WrappedComponent) {
+  return function LoadingComponent({ isLoading, ...props }) {
+    if (isLoading) {
+      return <div>Loading... 🔄</div>;
+    }
+    return <WrappedComponent {...props} />;
+  };
+}
+
+// Regular components
+function Dashboard({ user }) {
+  return (
+    <div>
+      <h1>Welcome to Dashboard, {user.name}!</h1>
+      <p>Your email: {user.email}</p>
+    </div>
+  );
+}
+
+function Profile({ user }) {
+  return (
+    <div>
+      <h1>Profile Page</h1>
+      <p>Name: {user.name}</p>
+    </div>
+  );
+}
+
+// Enhanced components using HOCs
+const AuthenticatedDashboard = withAuth(Dashboard);
+const AuthenticatedProfile = withAuth(Profile);
+const LoadingProfile = withLoading(Profile);
+
+// Usage
+function App() {
+  return (
+    <div>
+      <AuthenticatedDashboard />
+      <AuthenticatedProfile />
+      <LoadingProfile isLoading={false} user={{ name: 'John' }} />
+    </div>
+  );
+}
+
+// Advanced: Composing multiple HOCs
+const EnhancedDashboard = withAuth(withLoading(Dashboard));
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### Custom Hooks
+
+Like creating your own magic spells that you can use in any component - once you create the spell, you can cast it anywhere!
+
+**Key Points:**
+- Functions that start with "use" and contain React hooks
+- Extract reusable stateful logic between components
+- Can use other hooks inside them
+- Return anything you want (state, functions, objects)
+
+**Real-life example:** Like creating a universal remote control that works for TV, AC, and stereo - one remote (custom hook) for multiple devices (components).
+
+```js
+// Custom Hook for API data fetching
+function useApi(url) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
+
+        const result = await response.json();
+        setData(result);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [url]);
+
+  // Return everything the component might need
+  return { data, loading, error };
+}
+
+// Custom Hook for localStorage
+function useLocalStorage(key, initialValue) {
+  const [value, setValue] = useState(() => {
+    try {
+      const item = window.localStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
+    } catch (error) {
+      return initialValue;
+    }
+  });
+
+  const setStoredValue = (newValue) => {
+    try {
+      setValue(newValue);
+      window.localStorage.setItem(key, JSON.stringify(newValue));
+    } catch (error) {
+      console.error('Error saving to localStorage:', error);
+    }
+  };
+
+  return [value, setStoredValue];
+}
+
+// Custom Hook for form handling
+function useForm(initialValues) {
+  const [values, setValues] = useState(initialValues);
+  const [errors, setErrors] = useState({});
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setValues(prev => ({
+      ...prev,
+      [name]: value
+    }));
+
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+  };
+
+  const validate = (validationRules) => {
+    const newErrors = {};
+
+    Object.keys(validationRules).forEach(field => {
+      const rule = validationRules[field];
+      const value = values[field];
+
+      if (rule.required && !value) {
+        newErrors[field] = `${field} is required`;
+      } else if (rule.minLength && value.length < rule.minLength) {
+        newErrors[field] = `${field} must be at least ${rule.minLength} characters`;
+      }
+    });
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const reset = () => {
+    setValues(initialValues);
+    setErrors({});
+  };
+
+  return {
+    values,
+    errors,
+    handleChange,
+    validate,
+    reset
+  };
+}
+
+// Using Custom Hooks in Components
+function UserProfile() {
+  // Using useApi custom hook
+  const { data: user, loading, error } = useApi('/api/user/profile');
+
+  // Using useLocalStorage custom hook
+  const [theme, setTheme] = useLocalStorage('theme', 'light');
+
+  if (loading) return <div>Loading profile...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+  return (
+    <div className={`profile ${theme}`}>
+      <h1>{user.name}</h1>
+      <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+        Switch to {theme === 'light' ? 'Dark' : 'Light'} Mode
+      </button>
+    </div>
+  );
+}
+
+function ContactForm() {
+  // Using useForm custom hook
+  const {
+    values,
+    errors,
+    handleChange,
+    validate,
+    reset
+  } = useForm({
+    name: '',
+    email: '',
+    message: ''
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const isValid = validate({
+      name: { required: true, minLength: 2 },
+      email: { required: true },
+      message: { required: true, minLength: 10 }
+    });
+
+    if (isValid) {
+      console.log('Form submitted:', values);
+      reset();
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        name="name"
+        value={values.name}
+        onChange={handleChange}
+        placeholder="Your name"
+      />
+      {errors.name && <span className="error">{errors.name}</span>}
+
+      <input
+        name="email"
+        value={values.email}
+        onChange={handleChange}
+        placeholder="Your email"
+      />
+      {errors.email && <span className="error">{errors.email}</span>}
+
+      <textarea
+        name="message"
+        value={values.message}
+        onChange={handleChange}
+        placeholder="Your message"
+      />
+      {errors.message && <span className="error">{errors.message}</span>}
+
+      <button type="submit">Send Message</button>
+    </form>
+  );
+}
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### Deep Dive into Hooks: useEffect
+
+Like a Swiss Army knife for handling side effects - it can do cleanup, timers, data fetching, subscriptions, and more!
+
+**Key Points:**
+- Replaces componentDidMount, componentDidUpdate, componentWillUnmount
+- Runs after every render by default
+- Dependency array controls when it runs
+- Return cleanup function to prevent memory leaks
+
+**Real-life example:** Like a smart home assistant that can turn lights on when you arrive, off when you leave, and handle multiple scheduled tasks.
+
+```js
+import { useState, useEffect } from 'react';
+
+function UseEffectMasterClass() {
+  const [count, setCount] = useState(0);
+  const [user, setUser] = useState(null);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  // 1. BASIC useEffect - runs after every render
+  useEffect(() => {
+    console.log('Component rendered');
+  });
+
+  // 2. useEffect with EMPTY DEPENDENCY ARRAY - runs once on mount
+  useEffect(() => {
+    console.log('Component mounted - like componentDidMount');
+
+    // Fetch initial data
+    fetch('/api/user')
+      .then(res => res.json())
+      .then(setUser);
+  }, []); // Empty array = run once
+
+  // 3. useEffect with DEPENDENCIES - runs when dependencies change
+  useEffect(() => {
+    document.title = `Count: ${count}`;
+    console.log('Count changed to:', count);
+  }, [count]); // Runs when count changes
+
+  // 4. useEffect with CLEANUP - prevents memory leaks
+  useEffect(() => {
+    const timer = setInterval(() => {
+      console.log('Timer tick');
+    }, 1000);
+
+    // Cleanup function (like componentWillUnmount)
+    return () => {
+      clearInterval(timer);
+      console.log('Timer cleaned up');
+    };
+  }, []);
+
+  // 5. useEffect for EVENT LISTENERS
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup event listener
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  // 6. useEffect with ASYNC operations
+  useEffect(() => {
+    let cancelled = false;
+
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`/api/user/${count}`);
+        const userData = await response.json();
+
+        // Only update if component is still mounted
+        if (!cancelled) {
+          setUser(userData);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          console.error('Error fetching user:', error);
+        }
+      }
+    };
+
+    if (count > 0) {
+      fetchData();
+    }
+
+    // Cleanup function
+    return () => {
+      cancelled = true;
+    };
+  }, [count]);
+
+  // 7. CONDITIONAL useEffect
+  useEffect(() => {
+    if (user && user.preferences) {
+      localStorage.setItem('userPrefs', JSON.stringify(user.preferences));
+    }
+  }, [user?.preferences]); // Only run when user.preferences changes
+
+  return (
+    <div>
+      <h1>useEffect Deep Dive</h1>
+      <p>Count: {count}</p>
+      <p>Window Width: {windowWidth}px</p>
+      <p>User: {user ? user.name : 'Loading...'}</p>
+
+      <button onClick={() => setCount(count + 1)}>
+        Increment Count
+      </button>
+    </div>
+  );
+}
+
+// Advanced useEffect Patterns
+function AdvancedEffects() {
+  const [posts, setPosts] = useState([]);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+
+  // 8. useEffect for INFINITE SCROLL
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop
+        >= document.documentElement.offsetHeight - 1000
+      ) {
+        setPage(prev => prev + 1);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // 9. useEffect for DEBOUNCED API CALLS
+  const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    const debounceTimer = setTimeout(() => {
+      if (searchTerm) {
+        // API call after 500ms delay
+        fetch(`/api/search?q=${searchTerm}`)
+          .then(res => res.json())
+          .then(results => console.log(results));
+      }
+    }, 500);
+
+    return () => clearTimeout(debounceTimer);
+  }, [searchTerm]);
+
+  // 10. useEffect for WEBSOCKET connections
+  useEffect(() => {
+    const ws = new WebSocket('ws://localhost:8080');
+
+    ws.onopen = () => console.log('WebSocket connected');
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      console.log('Received:', message);
+    };
+    ws.onerror = (error) => console.error('WebSocket error:', error);
+
+    return () => {
+      ws.close();
+      console.log('WebSocket disconnected');
+    };
+  }, []);
+
+  return (
+    <div>
+      <input
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        placeholder="Search..."
+      />
+    </div>
+  );
+}
+
+// Common useEffect Mistakes and Solutions
+function UseEffectMistakes() {
+  const [count, setCount] = useState(0);
+
+  // ❌ MISTAKE 1: Missing dependency
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCount(count + 1); // This will always use initial count value
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []); // Missing 'count' in dependency array
+
+  // ✅ SOLUTION 1: Use functional update
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCount(prev => prev + 1); // Uses latest count
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []); // Now we don't need count as dependency
+
+  // ❌ MISTAKE 2: Infinite re-renders
+  useEffect(() => {
+    fetch('/api/data')
+      .then(res => res.json())
+      .then(data => setCount(data.count));
+  }); // No dependency array = runs after every render
+
+  // ✅ SOLUTION 2: Add dependency array
+  useEffect(() => {
+    fetch('/api/data')
+      .then(res => res.json())
+      .then(data => setCount(data.count));
+  }, []); // Runs only once
+
+  return <div>Count: {count}</div>;
+}
+```
+
+<br>
+
+<br>
+
+<br>
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+##
+
+##
+
+<br>
+
+### useRef
+
+Like having a sticky note that you can attach to any element or value - it persists between renders but doesn't trigger re-renders when changed!
+
+**Key Points:**
+- Creates a mutable reference that persists across renders
+- Doesn't trigger re-renders when `.current` changes
+- Common uses: DOM manipulation, storing previous values, timers
+- Like `createRef` but for functional components
+
+**Real-life example:** Like having a bookmark in a book - you can move it around without changing the book's content, and it stays where you put it.
+
+```js
+import { useRef, useState, useEffect } from 'react';
+
+function UseRefExamples() {
+  // 1. BASIC useRef for DOM elements
+  const inputRef = useRef(null);
+  const divRef = useRef(null);
+
+  const focusInput = () => {
+    inputRef.current.focus(); // Direct DOM access
+  };
+
+  const scrollToDiv = () => {
+    divRef.current.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // 2. useRef for STORING VALUES (doesn't trigger re-render)
+  const countRef = useRef(0);
+  const [renderCount, setRenderCount] = useState(0);
+
+  const incrementRef = () => {
+    countRef.current += 1;
+    console.log('Ref count:', countRef.current); // Updates but no re-render
+  };
+
+  const incrementState = () => {
+    setRenderCount(prev => prev + 1); // Triggers re-render
+  };
+
+  // 3. useRef for PREVIOUS VALUES
+  const [name, setName] = useState('');
+  const prevNameRef = useRef('');
+
+  useEffect(() => {
+    prevNameRef.current = name; // Store previous value after render
+  });
+
+  const prevName = prevNameRef.current;
+
+  // 4. useRef for TIMERS
+  const timerRef = useRef(null);
+  const [seconds, setSeconds] = useState(0);
+
+  const startTimer = () => {
+    if (!timerRef.current) {
+      timerRef.current = setInterval(() => {
+        setSeconds(prev => prev + 1);
+      }, 1000);
+    }
+  };
+
+  const stopTimer = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  };
+
+  const resetTimer = () => {
+    stopTimer();
+    setSeconds(0);
+  };
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, []);
+
+  return (
+    <div>
+      <h1>useRef Examples</h1>
+
+      {/* DOM Reference Examples */}
+      <section>
+        <h2>DOM References</h2>
+        <input ref={inputRef} placeholder="I can be focused!" />
+        <button onClick={focusInput}>Focus Input</button>
+
+        <div
+          ref={divRef}
+          style={{
+            height: '200px',
+            backgroundColor: 'lightblue',
+            marginTop: '100vh'
+          }}
+        >
+          Scroll to me!
+        </div>
+        <button onClick={scrollToDiv}>Scroll to Blue Div</button>
+      </section>
+
+      {/* Value Storage Examples */}
+      <section>
+        <h2>Value Storage</h2>
+        <p>Ref count (no re-render): {countRef.current}</p>
+        <p>State count (triggers re-render): {renderCount}</p>
+        <button onClick={incrementRef}>Increment Ref</button>
+        <button onClick={incrementState}>Increment State</button>
+      </section>
+
+      {/* Previous Value Example */}
+      <section>
+        <h2>Previous Values</h2>
+        <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Type your name"
+        />
+        <p>Current name: {name}</p>
+        <p>Previous name: {prevName}</p>
+      </section>
+
+      {/* Timer Example */}
+      <section>
+        <h2>Timer Control</h2>
+        <p>Timer: {seconds} seconds</p>
+        <button onClick={startTimer}>Start</button>
+        <button onClick={stopTimer}>Stop</button>
+        <button onClick={resetTimer}>Reset</button>
+      </section>
+    </div>
+  );
+}
+
+// Advanced useRef Patterns
+function AdvancedUseRef() {
+  // 5. useRef for CALLBACK REFS
+  const [height, setHeight] = useState(0);
+
+  const measuredRef = useRef(null);
+
+  const callbackRef = useRef((node) => {
+    if (node !== null) {
+      setHeight(node.getBoundingClientRect().height);
+    }
+  });
+
+  // 6. useRef for STORING FUNCTIONS
+  const apiCallRef = useRef(null);
+
+  useEffect(() => {
+    // Store the latest API call function
+    apiCallRef.current = async (id) => {
+      const response = await fetch(`/api/items/${id}`);
+      return response.json();
+    };
+  });
+
+  const handleApiCall = async (id) => {
+    if (apiCallRef.current) {
+      const data = await apiCallRef.current(id);
+      console.log('API data:', data);
+    }
+  };
+
+  // 7. useRef for IMPERATIVE ACTIONS
+  const customComponentRef = useRef(null);
+
+  const triggerCustomAction = () => {
+    if (customComponentRef.current) {
+      customComponentRef.current.doSomething();
+    }
+  };
+
+  return (
+    <div>
+      <div ref={callbackRef}>
+        <p>This div's height is: {height}px</p>
+      </div>
+
+      <CustomComponent ref={customComponentRef} />
+      <button onClick={triggerCustomAction}>
+        Trigger Custom Action
+      </button>
+    </div>
+  );
+}
+
+// Forward Ref Example
+const CustomComponent = React.forwardRef((props, ref) => {
+  const [value, setValue] = useState('');
+
+  // Expose methods to parent component
+  useImperativeHandle(ref, () => ({
+    doSomething: () => {
+      setValue('Action triggered!');
+      console.log('Custom action executed');
+    },
+    reset: () => {
+      setValue('');
+    },
+    getValue: () => value
+  }));
+
+  return (
+    <div>
+      <p>Custom Component Value: {value}</p>
+    </div>
+  );
+});
+
+// Custom Hook using useRef
+function usePrevious(value) {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+}
+
+// Usage of custom hook
+function ComponentWithPrevious() {
+  const [count, setCount] = useState(0);
+  const prevCount = usePrevious(count);
+
+  return (
+    <div>
+      <p>Current: {count}</p>
+      <p>Previous: {prevCount}</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  );
+}
+```
+
+
+### useImperativeHandle
+
+Like giving your component a remote control that parents can use to trigger specific actions!
+
+**Key Points:**
+- Exposes custom functions to parent components
+- Used with `forwardRef`
+- Limits what parent can access
+
+```js
+const CustomInput = forwardRef((props, ref) => {
+  const inputRef = useRef();
+
+  useImperativeHandle(ref, () => ({
+    focus: () => inputRef.current.focus(),
+    clear: () => inputRef.current.value = '',
+    getValue: () => inputRef.current.value
+  }));
+
+  return <input ref={inputRef} {...props} />;
+});
+
+// Usage
+function Parent() {
+  const childRef = useRef();
+
+  return (
+    <div>
+      <CustomInput ref={childRef} />
+      <button onClick={() => childRef.current.focus()}>Focus</button>
+      <button onClick={() => childRef.current.clear()}>Clear</button>
+    </div>
+  );
+}
+```
+
+### useMemo
+
+Like having a smart calculator that remembers expensive calculations so it doesn't repeat them!
+
+**Key Points:**
+- Caches expensive calculations
+- Only recalculates when dependencies change
+- Helps performance optimization
+
+```js
+function ExpensiveComponent({ items, filter }) {
+  // Without useMemo - calculates every render
+  const expensiveValue = items.filter(item =>
+    item.name.includes(filter)
+  ).reduce((sum, item) => sum + item.price, 0);
+
+  // With useMemo - only recalculates when items or filter change
+  const memoizedValue = useMemo(() => {
+    return items.filter(item =>
+      item.name.includes(filter)
+    ).reduce((sum, item) => sum + item.price, 0);
+  }, [items, filter]);
+
+  return <div>Total: ${memoizedValue}</div>;
+}
+```
+
+### useCallback
+
+Like saving a recipe card so you don't have to rewrite it every time you cook!
+
+**Key Points:**
+- Caches function definitions
+- Prevents unnecessary child re-renders
+- Use when passing functions to child components
+
+```js
+function Parent() {
+  const [count, setCount] = useState(0);
+  const [name, setName] = useState('');
+
+  // Bad - new function every render
+  const handleClick = () => setCount(count + 1);
+
+  // Good - cached function
+  const memoizedClick = useCallback(() => {
+    setCount(prev => prev + 1);
+  }, []);
+
+  return (
+    <div>
+      <Child onClick={memoizedClick} />
+      <input value={name} onChange={(e) => setName(e.target.value)} />
+    </div>
+  );
+}
+
+const Child = React.memo(({ onClick }) => {
+  console.log('Child rendered');
+  return <button onClick={onClick}>Click me</button>;
+});
+```
+
+### useContext
+
+Like a family group chat where everyone can see the same messages without passing them person to person!
+
+**Key Points:**
+- Shares data across components without prop drilling
+- Create context, provide value, consume in any child
+- Great for themes, user auth, language settings
+
+```js
+// 1. Create Context
+const ThemeContext = createContext();
+
+// 2. Provider Component
+function App() {
+  const [theme, setTheme] = useState('light');
+
+  return (
+    <ThemeContext.Provider value={{ theme, setTheme }}>
+      <Header />
+      <MainContent />
+      <Footer />
+    </ThemeContext.Provider>
+  );
+}
+
+// 3. Consume Context
+function Header() {
+  const { theme, setTheme } = useContext(ThemeContext);
+
+  return (
+    <header className={theme}>
+      <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+        Switch to {theme === 'light' ? 'Dark' : 'Light'}
+      </button>
+    </header>
+  );
+}
+
+function MainContent() {
+  const { theme } = useContext(ThemeContext);
+  return <main className={theme}>Content here</main>;
+}
+```
+
+### useReducer
+
+Like having a state manager that handles complex state changes with specific rules!
+
+**Key Points:**
+- Better than useState for complex state logic
+- Predictable state updates through actions
+- Similar to Redux pattern
+
+```js
+// 1. Define reducer function
+function counterReducer(state, action) {
+  switch (action.type) {
+    case 'increment':
+      return { count: state.count + 1 };
+    case 'decrement':
+      return { count: state.count - 1 };
+    case 'reset':
+      return { count: 0 };
+    case 'set':
+      return { count: action.payload };
+    default:
+      throw new Error(`Unknown action: ${action.type}`);
+  }
+}
+
+// 2. Use reducer in component
+function Counter() {
+  const [state, dispatch] = useReducer(counterReducer, { count: 0 });
+
+  return (
+    <div>
+      <p>Count: {state.count}</p>
+      <button onClick={() => dispatch({ type: 'increment' })}>+</button>
+      <button onClick={() => dispatch({ type: 'decrement' })}>-</button>
+      <button onClick={() => dispatch({ type: 'reset' })}>Reset</button>
+      <button onClick={() => dispatch({ type: 'set', payload: 10 })}>Set to 10</button>
+    </div>
+  );
+}
+
+// Complex example - Todo app
+function todoReducer(todos, action) {
+  switch (action.type) {
+    case 'add':
+      return [...todos, { id: Date.now(), text: action.text, done: false }];
+    case 'toggle':
+      return todos.map(todo =>
+        todo.id === action.id ? { ...todo, done: !todo.done } : todo
+      );
+    case 'delete':
+      return todos.filter(todo => todo.id !== action.id);
+    default:
+      return todos;
+  }
+}
+
+function TodoApp() {
+  const [todos, dispatch] = useReducer(todoReducer, []);
+
+  return (
+    <div>
+      <button onClick={() => dispatch({ type: 'add', text: 'New todo' })}>
+        Add Todo
+      </button>
+      {todos.map(todo => (
+        <div key={todo.id}>
+          <span style={{ textDecoration: todo.done ? 'line-through' : 'none' }}>
+            {todo.text}
+          </span>
+          <button onClick={() => dispatch({ type: 'toggle', id: todo.id })}>
+            Toggle
+          </button>
+          <button onClick={() => dispatch({ type: 'delete', id: todo.id })}>
+            Delete
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+}
+```
